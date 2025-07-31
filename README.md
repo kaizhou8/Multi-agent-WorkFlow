@@ -9,7 +9,7 @@
 
 Multi-Agent is a comprehensive multi-agent workflow desktop application system built with C#/.NET 9.0, featuring a modern MAUI + ASP.NET Core Web API architecture. This project delivers enterprise-grade multi-agent collaboration capabilities with advanced AI integration, real-time monitoring, and intuitive user experience.
 
-**Inspired by Eigent**, this system provides enhanced performance, enterprise integration capabilities, and superior development experience with a focus on modularity, security, and scalability.
+This system provides enhanced performance, enterprise integration capabilities, and superior development experience with a focus on modularity, security, and scalability.
 
 ## Core Features
 
@@ -327,7 +327,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- Thanks to [Eigent](https://github.com/eigent-ai/eigent) project for design inspiration
+
 - Thanks to Microsoft for excellent development tools and frameworks
 - Thanks to the open source community for contributions and support
 
