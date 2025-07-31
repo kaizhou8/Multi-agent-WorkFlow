@@ -1,0 +1,491 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="MultiAgent.Desktop.Views.AICodeAnalysisPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="AI Code Analysis"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}">
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="20">
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Label Grid.Column="0"
+                           Text="🔍"
+                           FontSize="32"
+                           VerticalOptions="Center" />
+                    <StackLayout Grid.Column="1"
+                               Spacing="5"
+                               Margin="15,0">
+                        <Label Text="AI Code Analysis"
+                               Style="{StaticResource TitleLabelStyle}" />
+                        <Label Text="Analyze code quality, detect issues, and get improvement suggestions"
+                               Style="{StaticResource BodyLabelStyle}" />
+                        <Label Text="
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="12" />
+                    </StackLayout>
+                    <Button Grid.Column="2"
+                            Text="History"
+                            Command="{Binding ShowAnalysisHistoryCommand}"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            VerticalOptions="Center" />
+                </Grid>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                        <Label Grid.Column="0"
+                               Text="Code Input"
+                               Style="{StaticResource SubtitleLabelStyle}" />
+                        <Button Grid.Column="1"
+                                Text="📁"
+                                Command="{Binding LoadFromFileCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12"
+                                Padding="10,5"
+                                ToolTipProperties.Text="Load from file"
+                                Margin="5,0" />
+                        <Button Grid.Column="2"
+                                Text="📋"
+                                Command="{Binding PasteFromClipboardCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12"
+                                Padding="10,5"
+                                ToolTipProperties.Text="Paste from clipboard"
+                                Margin="5,0" />
+                        <Button Grid.Column="3"
+                                Text="Clear"
+                                Command="{Binding ClearCodeCommand}"
+                                Style="{StaticResource DangerButtonStyle}"
+                                FontSize="12" />
+                    </Grid>
+                    <!-- $1 -->
+                    <Grid ColumnDefinitions="Auto,*,Auto,*"
+                          ColumnSpacing="15">
+                        <Label Grid.Column="0"
+                               Text="Language:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Picker Grid.Column="1"
+                                ItemsSource="{Binding SupportedLanguages}"
+                                ItemDisplayBinding="{Binding DisplayName}"
+                                SelectedItem="{Binding SelectedLanguage}"
+                                Title="Select programming language" />
+                        <Label Grid.Column="2"
+                               Text="Analysis Type:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Picker Grid.Column="3"
+                                ItemsSource="{Binding AnalysisTypes}"
+                                SelectedItem="{Binding SelectedAnalysisType}"
+                                Title="Select analysis type" />
+                    </Grid>
+                    <!-- $1 -->
+                    <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}"
+                           CornerRadius="10"
+                           Padding="15"
+                           HeightRequest="300">
+                        <Editor Text="{Binding CodeInput}"
+                                Placeholder="Paste your code here or load from file..."
+                                FontFamily="Consolas"
+                                FontSize="12"
+                                IsEnabled="{Binding IsNotAnalyzing}" />
+                    </Frame>
+                    <!-- $1 -->
+                    <StackLayout Orientation="Horizontal"
+                               Spacing="20"
+                               IsVisible="{Binding HasFileInfo}">
+                        <Label Text="{Binding FileName, StringFormat='File: {0}'}"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="12" />
+                        <Label Text="{Binding FileSize, StringFormat='Size: {0} bytes'}"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="12" />
+                        <Label Text="{Binding LineCount, StringFormat='Lines: {0}'}"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="12" />
+                    </StackLayout>
+                    <!-- $1 -->
+                    <StackLayout Spacing="10">
+                        <Label Text="Analysis Options"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontAttributes="Bold" />
+                        <Grid ColumnDefinitions="*,*"
+                              ColumnSpacing="20"
+                              RowDefinitions="Auto,Auto,Auto"
+                              RowSpacing="10">
+                            <CheckBox Grid.Row="0" Grid.Column="0"
+                                      IsChecked="{Binding CheckSyntax}"
+                                      VerticalOptions="Center" />
+                            <Label Grid.Row="0" Grid.Column="0"
+                                   Text="Syntax Check"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   Margin="30,0,0,0"
+                                   VerticalOptions="Center" />
+                            <CheckBox Grid.Row="0" Grid.Column="1"
+                                      IsChecked="{Binding CheckSecurity}"
+                                      VerticalOptions="Center" />
+                            <Label Grid.Row="0" Grid.Column="1"
+                                   Text="Security Analysis"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   Margin="30,0,0,0"
+                                   VerticalOptions="Center" />
+                            <CheckBox Grid.Row="1" Grid.Column="0"
+                                      IsChecked="{Binding CheckPerformance}"
+                                      VerticalOptions="Center" />
+                            <Label Grid.Row="1" Grid.Column="0"
+                                   Text="Performance Review"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   Margin="30,0,0,0"
+                                   VerticalOptions="Center" />
+                            <CheckBox Grid.Row="1" Grid.Column="1"
+                                      IsChecked="{Binding CheckBestPractices}"
+                                      VerticalOptions="Center" />
+                            <Label Grid.Row="1" Grid.Column="1"
+                                   Text="Best Practices"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   Margin="30,0,0,0"
+                                   VerticalOptions="Center" />
+                            <CheckBox Grid.Row="2" Grid.Column="0"
+                                      IsChecked="{Binding CheckComplexity}"
+                                      VerticalOptions="Center" />
+                            <Label Grid.Row="2" Grid.Column="0"
+                                   Text="Complexity Analysis"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   Margin="30,0,0,0"
+                                   VerticalOptions="Center" />
+                            <CheckBox Grid.Row="2" Grid.Column="1"
+                                      IsChecked="{Binding GenerateSuggestions}"
+                                      VerticalOptions="Center" />
+                            <Label Grid.Row="2" Grid.Column="1"
+                                   Text="Generate Suggestions"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   Margin="30,0,0,0"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                    </StackLayout>
+                    <!-- $1 -->
+                    <Button Text="🔍 Analyze Code"
+                            Command="{Binding AnalyzeCodeCommand}"
+                            Style="{StaticResource BaseButtonStyle}"
+                            FontSize="16"
+                            HeightRequest="50"
+                            IsEnabled="{Binding CanAnalyze}"
+                            HorizontalOptions="Center"
+                            WidthRequest="200" />
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}"
+                   IsVisible="{Binding IsAnalyzing}">
+                <StackLayout Spacing="15">
+                    <Label Text="Analyzing Code..."
+                           Style="{StaticResource SubtitleLabelStyle}"
+                           HorizontalOptions="Center" />
+                    <ActivityIndicator IsRunning="{Binding IsAnalyzing}"
+                                     Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                     WidthRequest="40"
+                                     HeightRequest="40"
+                                     HorizontalOptions="Center" />
+                    <Label Text="{Binding AnalysisStatus}"
+                           Style="{StaticResource BodyLabelStyle}"
+                           HorizontalOptions="Center"
+                           FontSize="12" />
+                    <ProgressBar Progress="{Binding AnalysisProgress}"
+                                 ProgressColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                 BackgroundColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
+                                 HeightRequest="8" />
+                    <Button Text="Cancel Analysis"
+                            Command="{Binding CancelAnalysisCommand}"
+                            Style="{StaticResource DangerButtonStyle}"
+                            HorizontalOptions="Center" />
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}"
+                   IsVisible="{Binding HasAnalysisResults}">
+                <StackLayout Spacing="15">
+                    <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                        <Label Grid.Column="0"
+                               Text="Analysis Results"
+                               Style="{StaticResource SubtitleLabelStyle}" />
+                        <Button Grid.Column="1"
+                                Text="📊"
+                                Command="{Binding ShowDetailedReportCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12"
+                                Padding="10,5"
+                                ToolTipProperties.Text="Detailed report" />
+                        <Button Grid.Column="2"
+                                Text="📋"
+                                Command="{Binding CopyResultsCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12"
+                                Padding="10,5"
+                                ToolTipProperties.Text="Copy results" />
+                        <Button Grid.Column="3"
+                                Text="💾"
+                                Command="{Binding SaveResultsCommand}"
+                                Style="{StaticResource BaseButtonStyle}"
+                                FontSize="12"
+                                Padding="10,5"
+                                ToolTipProperties.Text="Save results" />
+                    </Grid>
+                    <!-- $1 -->
+                    <Frame BackgroundColor="{Binding OverallScoreColor}"
+                           CornerRadius="15"
+                           Padding="20,15"
+                           HorizontalOptions="Center">
+                        <StackLayout Orientation="Horizontal"
+                                   Spacing="15">
+                            <Label Text="📊"
+                                   FontSize="24"
+                                   TextColor="White"
+                                   VerticalOptions="Center" />
+                            <StackLayout Spacing="2">
+                                <Label Text="Overall Score"
+                                       TextColor="White"
+                                       FontAttributes="Bold"
+                                       FontSize="14" />
+                                <Label Text="{Binding OverallScore, StringFormat='{0}/100'}"
+                                       TextColor="White"
+                                       FontSize="20"
+                                       FontAttributes="Bold" />
+                            </StackLayout>
+                        </StackLayout>
+                    </Frame>
+                    <!-- $1 -->
+                    <Grid ColumnDefinitions="*,*,*"
+                          ColumnSpacing="10"
+                          RowDefinitions="Auto,Auto"
+                          RowSpacing="10">
+                        <StackLayout Grid.Column="0" Grid.Row="0"
+                                   Spacing="5">
+                            <Label Text="Syntax"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   HorizontalOptions="Center" />
+                            <Frame BackgroundColor="{Binding SyntaxScoreColor}"
+                                   CornerRadius="10"
+                                   Padding="8,5"
+                                   HorizontalOptions="Center">
+                                <Label Text="{Binding SyntaxScore, StringFormat='{0}/100'}"
+                                       TextColor="White"
+                                       FontSize="12"
+                                       FontAttributes="Bold" />
+                            </Frame>
+                        </StackLayout>
+                        <StackLayout Grid.Column="1" Grid.Row="0"
+                                   Spacing="5">
+                            <Label Text="Security"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   HorizontalOptions="Center" />
+                            <Frame BackgroundColor="{Binding SecurityScoreColor}"
+                                   CornerRadius="10"
+                                   Padding="8,5"
+                                   HorizontalOptions="Center">
+                                <Label Text="{Binding SecurityScore, StringFormat='{0}/100'}"
+                                       TextColor="White"
+                                       FontSize="12"
+                                       FontAttributes="Bold" />
+                            </Frame>
+                        </StackLayout>
+                        <StackLayout Grid.Column="2" Grid.Row="0"
+                                   Spacing="5">
+                            <Label Text="Performance"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   HorizontalOptions="Center" />
+                            <Frame BackgroundColor="{Binding PerformanceScoreColor}"
+                                   CornerRadius="10"
+                                   Padding="8,5"
+                                   HorizontalOptions="Center">
+                                <Label Text="{Binding PerformanceScore, StringFormat='{0}/100'}"
+                                       TextColor="White"
+                                       FontSize="12"
+                                       FontAttributes="Bold" />
+                            </Frame>
+                        </StackLayout>
+                        <StackLayout Grid.Column="0" Grid.Row="1"
+                                   Spacing="5">
+                            <Label Text="Complexity"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   HorizontalOptions="Center" />
+                            <Frame BackgroundColor="{Binding ComplexityScoreColor}"
+                                   CornerRadius="10"
+                                   Padding="8,5"
+                                   HorizontalOptions="Center">
+                                <Label Text="{Binding ComplexityScore, StringFormat='{0}/100'}"
+                                       TextColor="White"
+                                       FontSize="12"
+                                       FontAttributes="Bold" />
+                            </Frame>
+                        </StackLayout>
+                        <StackLayout Grid.Column="1" Grid.Row="1"
+                                   Spacing="5">
+                            <Label Text="Best Practices"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   HorizontalOptions="Center" />
+                            <Frame BackgroundColor="{Binding BestPracticesScoreColor}"
+                                   CornerRadius="10"
+                                   Padding="8,5"
+                                   HorizontalOptions="Center">
+                                <Label Text="{Binding BestPracticesScore, StringFormat='{0}/100'}"
+                                       TextColor="White"
+                                       FontSize="12"
+                                       FontAttributes="Bold" />
+                            </Frame>
+                        </StackLayout>
+                        <StackLayout Grid.Column="2" Grid.Row="1"
+                                   Spacing="5">
+                            <Label Text="Maintainability"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   HorizontalOptions="Center" />
+                            <Frame BackgroundColor="{Binding MaintainabilityScoreColor}"
+                                   CornerRadius="10"
+                                   Padding="8,5"
+                                   HorizontalOptions="Center">
+                                <Label Text="{Binding MaintainabilityScore, StringFormat='{0}/100'}"
+                                       TextColor="White"
+                                       FontSize="12"
+                                       FontAttributes="Bold" />
+                            </Frame>
+                        </StackLayout>
+                    </Grid>
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}"
+                   IsVisible="{Binding HasIssues}">
+                <StackLayout Spacing="15">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0"
+                               Text="Issues Found"
+                               Style="{StaticResource SubtitleLabelStyle}" />
+                        <Label Grid.Column="1"
+                               Text="{Binding IssueCount, StringFormat='{0} issues'}"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="12"
+                               TextColor="{AppThemeBinding Light={StaticResource Tertiary}, Dark={StaticResource TertiaryDark}}" />
+                    </Grid>
+                    <CollectionView ItemsSource="{Binding Issues}"
+                                   HeightRequest="250">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame Style="{StaticResource CardFrameStyle}"
+                                       Margin="0,5"
+                                       BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}">
+                                    <Grid ColumnDefinitions="Auto,*,Auto"
+                                          ColumnSpacing="15">
+                                        <!-- $1 -->
+                                        <Frame Grid.Column="0"
+                                               BackgroundColor="{Binding SeverityColor}"
+                                               CornerRadius="10"
+                                               Padding="8,4"
+                                               HasShadow="False"
+                                               VerticalOptions="Start">
+                                            <Label Text="{Binding Severity}"
+                                                   TextColor="White"
+                                                   FontSize="10"
+                                                   FontAttributes="Bold" />
+                                        </Frame>
+                                        <!-- $1 -->
+                                        <StackLayout Grid.Column="1"
+                                                   Spacing="5">
+                                            <Label Text="{Binding Title}"
+                                                   Style="{StaticResource BodyLabelStyle}"
+                                                   FontAttributes="Bold"
+                                                   FontSize="12" />
+                                            <Label Text="{Binding Description}"
+                                                   Style="{StaticResource BodyLabelStyle}"
+                                                   FontSize="11"
+                                                   LineBreakMode="WordWrap" />
+                                            <Label Text="{Binding Location, StringFormat='Line: {0}'}"
+                                                   Style="{StaticResource BodyLabelStyle}"
+                                                   FontSize="10"
+                                                   TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                                        </StackLayout>
+                                        <!-- $1 -->
+                                        <Button Grid.Column="2"
+                                                Text="Fix"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ShowFixSuggestionCommand}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource BaseButtonStyle}"
+                                                FontSize="10"
+                                                Padding="8,5"
+                                                VerticalOptions="Start" />
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}"
+                   IsVisible="{Binding HasSuggestions}">
+                <StackLayout Spacing="15">
+                    <Label Text="Improvement Suggestions"
+                           Style="{StaticResource SubtitleLabelStyle}" />
+                    <CollectionView ItemsSource="{Binding Suggestions}"
+                                   HeightRequest="200">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame Style="{StaticResource CardFrameStyle}"
+                                       Margin="0,5"
+                                       BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}">
+                                    <Grid ColumnDefinitions="Auto,*,Auto"
+                                          ColumnSpacing="15">
+                                        <!-- $1 -->
+                                        <Label Grid.Column="0"
+                                               Text="{Binding Icon}"
+                                               FontSize="20"
+                                               VerticalOptions="Center" />
+                                        <!-- $1 -->
+                                        <StackLayout Grid.Column="1"
+                                                   Spacing="5">
+                                            <Label Text="{Binding Title}"
+                                                   Style="{StaticResource BodyLabelStyle}"
+                                                   FontAttributes="Bold"
+                                                   FontSize="12" />
+                                            <Label Text="{Binding Description}"
+                                                   Style="{StaticResource BodyLabelStyle}"
+                                                   FontSize="11"
+                                                   LineBreakMode="WordWrap" />
+                                            <Label Text="{Binding Impact, StringFormat='Impact: {0}'}"
+                                                   Style="{StaticResource BodyLabelStyle}"
+                                                   FontSize="10"
+                                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                                        </StackLayout>
+                                        <!-- $1 -->
+                                        <Button Grid.Column="2"
+                                                Text="Apply"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ApplySuggestionCommand}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource BaseButtonStyle}"
+                                                FontSize="10"
+                                                Padding="8,5"
+                                                VerticalOptions="Start" />
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+            </Frame>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
+

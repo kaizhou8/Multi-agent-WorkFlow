@@ -1,0 +1,490 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="MultiAgent.Desktop.Views.AIImageAnalysisPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="AI Image Analysis"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}">
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="20">
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Label Grid.Column="0"
+                           Text="🖼️"
+                           FontSize="32"
+                           VerticalOptions="Center" />
+                    <StackLayout Grid.Column="1"
+                               Spacing="5"
+                               Margin="15,0">
+                        <Label Text="AI Image Analysis"
+                               Style="{StaticResource TitleLabelStyle}" />
+                        <Label Text="Analyze images with AI for object detection, scene recognition, and content understanding"
+                               Style="{StaticResource BodyLabelStyle}" />
+                        <Label Text="
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="12" />
+                    </StackLayout>
+                    <Button Grid.Column="2"
+                            Text="Gallery"
+                            Command="{Binding ShowGalleryCommand}"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            VerticalOptions="Center" />
+                </Grid>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                        <Label Grid.Column="0"
+                               Text="Image Upload"
+                               Style="{StaticResource SubtitleLabelStyle}" />
+                        <Button Grid.Column="1"
+                                Text="📷 Camera"
+                                Command="{Binding TakePictureCommand}"
+                                Style="{StaticResource BaseButtonStyle}"
+                                FontSize="12"
+                                Margin="5,0" />
+                        <Button Grid.Column="2"
+                                Text="📁 Browse"
+                                Command="{Binding BrowseImageCommand}"
+                                Style="{StaticResource BaseButtonStyle}"
+                                FontSize="12"
+                                Margin="5,0" />
+                        <Button Grid.Column="3"
+                                Text="Clear"
+                                Command="{Binding ClearImageCommand}"
+                                Style="{StaticResource DangerButtonStyle}"
+                                FontSize="12" />
+                    </Grid>
+                    <!-- $1 -->
+                    <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}"
+                           CornerRadius="10"
+                           Padding="30"
+                           HeightRequest="200"
+                           HasShadow="False"
+                           BorderColor="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"
+                           IsVisible="{Binding HasNoImage}">
+                        <StackLayout Spacing="10"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center">
+                            <Label Text="🖼️"
+                                   FontSize="48"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}" />
+                            <Label Text="Drop image here, take photo, or click Browse"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}" />
+                            <Label Text="
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}" />
+                        </StackLayout>
+                    </Frame>
+                    <!-- $1 -->
+                    <Frame Style="{StaticResource CardFrameStyle}"
+                           BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}"
+                           IsVisible="{Binding HasImage}">
+                        <StackLayout Spacing="15">
+                            <!-- $1 -->
+                            <Frame CornerRadius="10"
+                                   Padding="0"
+                                   HasShadow="True"
+                                   BackgroundColor="Transparent">
+                                <Image Source="{Binding ImageSource}"
+                                       Aspect="AspectFit"
+                                       HeightRequest="300"
+                                       WidthRequest="400"
+                                       HorizontalOptions="Center" />
+                            </Frame>
+                            <!-- $1 -->
+                            <Grid ColumnDefinitions="*,*,*"
+                                  ColumnSpacing="15">
+                                <StackLayout Grid.Column="0"
+                                           Spacing="5">
+                                    <Label Text="File Name"
+                                           Style="{StaticResource BodyLabelStyle}"
+                                           FontSize="10"
+                                           TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                                    <Label Text="{Binding ImageName}"
+                                           Style="{StaticResource BodyLabelStyle}"
+                                           FontSize="12"
+                                           FontAttributes="Bold"
+                                           LineBreakMode="TailTruncation" />
+                                </StackLayout>
+                                <StackLayout Grid.Column="1"
+                                           Spacing="5">
+                                    <Label Text="Dimensions"
+                                           Style="{StaticResource BodyLabelStyle}"
+                                           FontSize="10"
+                                           TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                                    <Label Text="{Binding ImageDimensions}"
+                                           Style="{StaticResource BodyLabelStyle}"
+                                           FontSize="12"
+                                           FontAttributes="Bold" />
+                                </StackLayout>
+                                <StackLayout Grid.Column="2"
+                                           Spacing="5">
+                                    <Label Text="Size"
+                                           Style="{StaticResource BodyLabelStyle}"
+                                           FontSize="10"
+                                           TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                                    <Label Text="{Binding ImageSize}"
+                                           Style="{StaticResource BodyLabelStyle}"
+                                           FontSize="12"
+                                           FontAttributes="Bold" />
+                                </StackLayout>
+                            </Grid>
+                        </StackLayout>
+                    </Frame>
+                    <!-- $1 -->
+                    <StackLayout Orientation="Horizontal"
+                               Spacing="10"
+                               HorizontalOptions="Center">
+                        <Label Text="Supported formats:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="12" />
+                        <Label Text="JPG, PNG, GIF, BMP, WEBP"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="12"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Label Text="Analysis Options"
+                           Style="{StaticResource SubtitleLabelStyle}" />
+                    <Grid ColumnDefinitions="*,*"
+                          ColumnSpacing="20"
+                          RowDefinitions="Auto,Auto,Auto,Auto"
+                          RowSpacing="15">
+                        <!-- $1 -->
+                        <CheckBox Grid.Row="0" Grid.Column="0"
+                                  IsChecked="{Binding DetectObjects}"
+                                  VerticalOptions="Center" />
+                        <StackLayout Grid.Row="0" Grid.Column="0"
+                                   Margin="30,0,0,0">
+                            <Label Text="Object Detection"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   FontAttributes="Bold" />
+                            <Label Text="Identify and locate objects in the image"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="10"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <CheckBox Grid.Row="0" Grid.Column="1"
+                                  IsChecked="{Binding RecognizeScene}"
+                                  VerticalOptions="Center" />
+                        <StackLayout Grid.Row="0" Grid.Column="1"
+                                   Margin="30,0,0,0">
+                            <Label Text="Scene Recognition"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   FontAttributes="Bold" />
+                            <Label Text="Identify the scene or environment"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="10"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <CheckBox Grid.Row="1" Grid.Column="0"
+                                  IsChecked="{Binding RecognizeText}"
+                                  VerticalOptions="Center" />
+                        <StackLayout Grid.Row="1" Grid.Column="0"
+                                   Margin="30,0,0,0">
+                            <Label Text="Text Recognition (OCR)"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   FontAttributes="Bold" />
+                            <Label Text="Extract text content from the image"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="10"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <CheckBox Grid.Row="1" Grid.Column="1"
+                                  IsChecked="{Binding DetectFaces}"
+                                  VerticalOptions="Center" />
+                        <StackLayout Grid.Row="1" Grid.Column="1"
+                                   Margin="30,0,0,0">
+                            <Label Text="Face Detection"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   FontAttributes="Bold" />
+                            <Label Text="Detect and analyze faces in the image"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="10"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <CheckBox Grid.Row="2" Grid.Column="0"
+                                  IsChecked="{Binding AnalyzeColors}"
+                                  VerticalOptions="Center" />
+                        <StackLayout Grid.Row="2" Grid.Column="0"
+                                   Margin="30,0,0,0">
+                            <Label Text="Color Analysis"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   FontAttributes="Bold" />
+                            <Label Text="Analyze dominant colors and palette"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="10"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <CheckBox Grid.Row="2" Grid.Column="1"
+                                  IsChecked="{Binding ModerateContent}"
+                                  VerticalOptions="Center" />
+                        <StackLayout Grid.Row="2" Grid.Column="1"
+                                   Margin="30,0,0,0">
+                            <Label Text="Content Moderation"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   FontAttributes="Bold" />
+                            <Label Text="Check for inappropriate content"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="10"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                        </StackLayout>
+                    </Grid>
+                    <!-- $1 -->
+                    <StackLayout Spacing="10">
+                        <Label Text="Custom Analysis Prompt"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontAttributes="Bold" />
+                        <Editor Text="{Binding CustomPrompt}"
+                                Placeholder="Describe what you want to analyze in this image..."
+                                HeightRequest="80"
+                                FontSize="12" />
+                    </StackLayout>
+                    <!-- $1 -->
+                    <Button Text="🔍 Analyze Image"
+                            Command="{Binding AnalyzeImageCommand}"
+                            Style="{StaticResource BaseButtonStyle}"
+                            FontSize="16"
+                            HeightRequest="50"
+                            IsEnabled="{Binding CanAnalyze}"
+                            HorizontalOptions="Center"
+                            WidthRequest="200" />
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}"
+                   IsVisible="{Binding IsAnalyzing}">
+                <StackLayout Spacing="15">
+                    <Label Text="Analyzing Image..."
+                           Style="{StaticResource SubtitleLabelStyle}"
+                           HorizontalOptions="Center" />
+                    <ActivityIndicator IsRunning="{Binding IsAnalyzing}"
+                                     Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                     WidthRequest="40"
+                                     HeightRequest="40"
+                                     HorizontalOptions="Center" />
+                    <Label Text="{Binding AnalysisStatus}"
+                           Style="{StaticResource BodyLabelStyle}"
+                           HorizontalOptions="Center"
+                           FontSize="12" />
+                    <ProgressBar Progress="{Binding AnalysisProgress}"
+                                 ProgressColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                 BackgroundColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
+                                 HeightRequest="8" />
+                    <Button Text="Cancel Analysis"
+                            Command="{Binding CancelAnalysisCommand}"
+                            Style="{StaticResource DangerButtonStyle}"
+                            HorizontalOptions="Center" />
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}"
+                   IsVisible="{Binding HasResults}">
+                <StackLayout Spacing="15">
+                    <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                        <Label Grid.Column="0"
+                               Text="Analysis Results"
+                               Style="{StaticResource SubtitleLabelStyle}" />
+                        <Button Grid.Column="1"
+                                Text="📊"
+                                Command="{Binding ExportReportCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12"
+                                Padding="10,5"
+                                ToolTipProperties.Text="Export report" />
+                        <Button Grid.Column="2"
+                                Text="📋"
+                                Command="{Binding CopyResultsCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12"
+                                Padding="10,5"
+                                ToolTipProperties.Text="Copy results" />
+                        <Button Grid.Column="3"
+                                Text="💾"
+                                Command="{Binding SaveResultsCommand}"
+                                Style="{StaticResource BaseButtonStyle}"
+                                FontSize="12"
+                                Padding="10,5"
+                                ToolTipProperties.Text="Save results" />
+                    </Grid>
+                    <!-- $1 -->
+                    <StackLayout Spacing="10"
+                               IsVisible="{Binding HasObjects}">
+                        <Label Text="🎯 Objects Detected"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontAttributes="Bold" />
+                        <CollectionView ItemsSource="{Binding DetectedObjects}"
+                                       HeightRequest="120">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame Style="{StaticResource CardFrameStyle}"
+                                           Margin="0,2"
+                                           Padding="15"
+                                           BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}">
+                                        <Grid ColumnDefinitions="*,Auto,Auto">
+                                            <StackLayout Grid.Column="0">
+                                                <Label Text="{Binding Name}"
+                                                       Style="{StaticResource BodyLabelStyle}"
+                                                       FontSize="12"
+                                                       FontAttributes="Bold" />
+                                                <Label Text="{Binding Description}"
+                                                       Style="{StaticResource BodyLabelStyle}"
+                                                       FontSize="10"
+                                                       TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                                            </StackLayout>
+                                            <Label Grid.Column="1"
+                                                   Text="{Binding Confidence, StringFormat='{0:P0}'}"
+                                                   Style="{StaticResource BodyLabelStyle}"
+                                                   FontSize="12"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                                   VerticalOptions="Center" />
+                                            <Frame Grid.Column="2"
+                                                   BackgroundColor="{Binding ConfidenceColor}"
+                                                   CornerRadius="10"
+                                                   Padding="8,4"
+                                                   HasShadow="False">
+                                                <Label Text="{Binding ConfidenceLevel}"
+                                                       TextColor="White"
+                                                       FontSize="8"
+                                                       FontAttributes="Bold" />
+                                            </Frame>
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                    <!-- $1 -->
+                    <StackLayout Spacing="10"
+                               IsVisible="{Binding HasScene}">
+                        <Label Text="🏞️ Scene Information"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontAttributes="Bold" />
+                        <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}"
+                               CornerRadius="10"
+                               Padding="15">
+                            <StackLayout Spacing="8">
+                                <Label Text="{Binding SceneName}"
+                                       Style="{StaticResource BodyLabelStyle}"
+                                       FontSize="14"
+                                       FontAttributes="Bold" />
+                                <Label Text="{Binding SceneDescription}"
+                                       Style="{StaticResource BodyLabelStyle}"
+                                       FontSize="12"
+                                       LineBreakMode="WordWrap" />
+                                <Label Text="{Binding SceneConfidence, StringFormat='Confidence: {0:P0}'}"
+                                       Style="{StaticResource BodyLabelStyle}"
+                                       FontSize="10"
+                                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                            </StackLayout>
+                        </Frame>
+                    </StackLayout>
+                    <!-- $1 -->
+                    <StackLayout Spacing="10"
+                               IsVisible="{Binding HasText}">
+                        <Label Text="📝 Extracted Text"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontAttributes="Bold" />
+                        <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}"
+                               CornerRadius="10"
+                               Padding="15">
+                            <Label Text="{Binding ExtractedText}"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   LineBreakMode="WordWrap" />
+                        </Frame>
+                    </StackLayout>
+                    <!-- $1 -->
+                    <StackLayout Spacing="10"
+                               IsVisible="{Binding HasColors}">
+                        <Label Text="🎨 Color Palette"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontAttributes="Bold" />
+                        <CollectionView ItemsSource="{Binding ColorPalette}"
+                                       ItemsLayout="HorizontalList"
+                                       HeightRequest="60">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackLayout Spacing="5"
+                                               Margin="10,0">
+                                        <Frame BackgroundColor="{Binding Color}"
+                                               CornerRadius="20"
+                                               WidthRequest="40"
+                                               HeightRequest="40"
+                                               HasShadow="True"
+                                               Padding="0" />
+                                        <Label Text="{Binding Percentage, StringFormat='{0:P0}'}"
+                                               Style="{StaticResource BodyLabelStyle}"
+                                               FontSize="8"
+                                               HorizontalOptions="Center" />
+                                    </StackLayout>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                    <!-- $1 -->
+                    <StackLayout Spacing="10"
+                               IsVisible="{Binding HasFaces}">
+                        <Label Text="👤 Face Analysis"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontAttributes="Bold" />
+                        <Label Text="{Binding FaceCount, StringFormat='Faces detected: {0}"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="12" />
+                        <CollectionView ItemsSource="{Binding FaceAnalysis}"
+                                       HeightRequest="100">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame Style="{StaticResource CardFrameStyle}"
+                                           Margin="0,2"
+                                           Padding="10"
+                                           BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}">
+                                        <Grid ColumnDefinitions="*,*,*">
+                                            <Label Grid.Column="0"
+                                                   Text="{Binding Age, StringFormat='Age: {0}'}"
+                                                   Style="{StaticResource BodyLabelStyle}"
+                                                   FontSize="10" />
+                                            <Label Grid.Column="1"
+                                                   Text="{Binding Gender}"
+                                                   Style="{StaticResource BodyLabelStyle}"
+                                                   FontSize="10" />
+                                            <Label Grid.Column="2"
+                                                   Text="{Binding Emotion}"
+                                                   Style="{StaticResource BodyLabelStyle}"
+                                                   FontSize="10" />
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
+

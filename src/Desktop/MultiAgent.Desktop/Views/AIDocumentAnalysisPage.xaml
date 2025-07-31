@@ -1,0 +1,475 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="MultiAgent.Desktop.Views.AIDocumentAnalysisPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="AI Document Analysis"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}">
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="20">
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Label Grid.Column="0"
+                           Text="📄"
+                           FontSize="32"
+                           VerticalOptions="Center" />
+                    <StackLayout Grid.Column="1"
+                               Spacing="5"
+                               Margin="15,0">
+                        <Label Text="AI Document Analysis"
+                               Style="{StaticResource TitleLabelStyle}" />
+                        <Label Text="Extract insights, summarize content, and analyze documents with AI"
+                               Style="{StaticResource BodyLabelStyle}" />
+                        <Label Text="
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="12" />
+                    </StackLayout>
+                    <Button Grid.Column="2"
+                            Text="Templates"
+                            Command="{Binding ShowTemplatesCommand}"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            VerticalOptions="Center" />
+                </Grid>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Grid ColumnDefinitions="*,Auto,Auto">
+                        <Label Grid.Column="0"
+                               Text="Document Upload"
+                               Style="{StaticResource SubtitleLabelStyle}" />
+                        <Button Grid.Column="1"
+                                Text="📁 Browse"
+                                Command="{Binding BrowseFileCommand}"
+                                Style="{StaticResource BaseButtonStyle}"
+                                FontSize="12"
+                                Margin="5,0" />
+                        <Button Grid.Column="2"
+                                Text="Clear"
+                                Command="{Binding ClearDocumentCommand}"
+                                Style="{StaticResource DangerButtonStyle}"
+                                FontSize="12" />
+                    </Grid>
+                    <!-- $1 -->
+                    <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}"
+                           CornerRadius="10"
+                           Padding="30"
+                           HeightRequest="150"
+                           HasShadow="False"
+                           BorderColor="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"
+                           IsVisible="{Binding HasNoDocument}">
+                        <StackLayout Spacing="10"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center">
+                            <Label Text="📄"
+                                   FontSize="48"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}" />
+                            <Label Text="Drop document here or click Browse"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}" />
+                            <Label Text=""
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}" />
+                        </StackLayout>
+                    </Frame>
+                    <!-- $1 -->
+                    <Frame Style="{StaticResource CardFrameStyle}"
+                           BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}"
+                           IsVisible="{Binding HasDocument}">
+                        <Grid ColumnDefinitions="Auto,*,Auto"
+                              ColumnSpacing="15">
+                            <!-- $1 -->
+                            <Label Grid.Column="0"
+                                   Text="{Binding DocumentIcon}"
+                                   FontSize="32"
+                                   VerticalOptions="Center" />
+                            <!-- $1 -->
+                            <StackLayout Grid.Column="1"
+                                       Spacing="5">
+                                <Label Text="{Binding DocumentName}"
+                                       Style="{StaticResource BodyLabelStyle}"
+                                       FontAttributes="Bold" />
+                                <StackLayout Orientation="Horizontal"
+                                           Spacing="15">
+                                    <Label Text="{Binding DocumentSize, StringFormat='Size: {0}'}"
+                                           Style="{StaticResource BodyLabelStyle}"
+                                           FontSize="12" />
+                                    <Label Text="{Binding DocumentType, StringFormat='Type: {0}'}"
+                                           Style="{StaticResource BodyLabelStyle}"
+                                           FontSize="12" />
+                                    <Label Text="{Binding PageCount, StringFormat='Pages: {0}'}"
+                                           Style="{StaticResource BodyLabelStyle}"
+                                           FontSize="12" />
+                                </StackLayout>
+                                <Label Text="{Binding DocumentPath}"
+                                       Style="{StaticResource BodyLabelStyle}"
+                                       FontSize="10"
+                                       LineBreakMode="TailTruncation"
+                                       TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                            </StackLayout>
+                            <!-- $1 -->
+                            <Button Grid.Column="2"
+                                    Text="👁️"
+                                    Command="{Binding PreviewDocumentCommand}"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    FontSize="16"
+                                    Padding="10"
+                                    ToolTipProperties.Text="Preview document" />
+                        </Grid>
+                    </Frame>
+                    <!-- $1 -->
+                    <StackLayout Orientation="Horizontal"
+                               Spacing="10"
+                               HorizontalOptions="Center">
+                        <Label Text="Supported formats:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="12" />
+                        <Label Text="PDF, DOCX, TXT, MD, RTF"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="12"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Label Text="Analysis Options"
+                           Style="{StaticResource SubtitleLabelStyle}" />
+                    <Grid ColumnDefinitions="*,*"
+                          ColumnSpacing="20"
+                          RowDefinitions="Auto,Auto,Auto,Auto"
+                          RowSpacing="15">
+                        <!-- $1 -->
+                        <CheckBox Grid.Row="0" Grid.Column="0"
+                                  IsChecked="{Binding GenerateSummary}"
+                                  VerticalOptions="Center" />
+                        <StackLayout Grid.Row="0" Grid.Column="0"
+                                   Margin="30,0,0,0">
+                            <Label Text="Generate Summary"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   FontAttributes="Bold" />
+                            <Label Text="Create concise document summary"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="10"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <CheckBox Grid.Row="0" Grid.Column="1"
+                                  IsChecked="{Binding ExtractKeyInfo}"
+                                  VerticalOptions="Center" />
+                        <StackLayout Grid.Row="0" Grid.Column="1"
+                                   Margin="30,0,0,0">
+                            <Label Text="Extract Key Information"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   FontAttributes="Bold" />
+                            <Label Text="Identify important facts and data"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="10"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <CheckBox Grid.Row="1" Grid.Column="0"
+                                  IsChecked="{Binding AnalyzeSentiment}"
+                                  VerticalOptions="Center" />
+                        <StackLayout Grid.Row="1" Grid.Column="0"
+                                   Margin="30,0,0,0">
+                            <Label Text="Sentiment Analysis"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   FontAttributes="Bold" />
+                            <Label Text="Analyze emotional tone and sentiment"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="10"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <CheckBox Grid.Row="1" Grid.Column="1"
+                                  IsChecked="{Binding ClassifyTopics}"
+                                  VerticalOptions="Center" />
+                        <StackLayout Grid.Row="1" Grid.Column="1"
+                                   Margin="30,0,0,0">
+                            <Label Text="Topic Classification"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   FontAttributes="Bold" />
+                            <Label Text="Categorize content by topics"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="10"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <CheckBox Grid.Row="2" Grid.Column="0"
+                                  IsChecked="{Binding RecognizeEntities}"
+                                  VerticalOptions="Center" />
+                        <StackLayout Grid.Row="2" Grid.Column="0"
+                                   Margin="30,0,0,0">
+                            <Label Text="Entity Recognition"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   FontAttributes="Bold" />
+                            <Label Text="Identify people, places, organizations"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="10"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <CheckBox Grid.Row="2" Grid.Column="1"
+                                  IsChecked="{Binding DetectLanguage}"
+                                  VerticalOptions="Center" />
+                        <StackLayout Grid.Row="2" Grid.Column="1"
+                                   Margin="30,0,0,0">
+                            <Label Text="Language Detection"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   FontAttributes="Bold" />
+                            <Label Text="Detect document language"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="10"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                        </StackLayout>
+                    </Grid>
+                    <!-- $1 -->
+                    <StackLayout Spacing="10">
+                        <Label Text="Custom Analysis Prompt"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontAttributes="Bold" />
+                        <Editor Text="{Binding CustomPrompt}"
+                                Placeholder="Enter custom analysis instructions..."
+                                HeightRequest="80"
+                                FontSize="12" />
+                    </StackLayout>
+                    <!-- $1 -->
+                    <Button Text="🔍 Analyze Document"
+                            Command="{Binding AnalyzeDocumentCommand}"
+                            Style="{StaticResource BaseButtonStyle}"
+                            FontSize="16"
+                            HeightRequest="50"
+                            IsEnabled="{Binding CanAnalyze}"
+                            HorizontalOptions="Center"
+                            WidthRequest="200" />
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}"
+                   IsVisible="{Binding IsAnalyzing}">
+                <StackLayout Spacing="15">
+                    <Label Text="Analyzing Document..."
+                           Style="{StaticResource SubtitleLabelStyle}"
+                           HorizontalOptions="Center" />
+                    <ActivityIndicator IsRunning="{Binding IsAnalyzing}"
+                                     Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                     WidthRequest="40"
+                                     HeightRequest="40"
+                                     HorizontalOptions="Center" />
+                    <Label Text="{Binding AnalysisStatus}"
+                           Style="{StaticResource BodyLabelStyle}"
+                           HorizontalOptions="Center"
+                           FontSize="12" />
+                    <ProgressBar Progress="{Binding AnalysisProgress}"
+                                 ProgressColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                 BackgroundColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
+                                 HeightRequest="8" />
+                    <Button Text="Cancel Analysis"
+                            Command="{Binding CancelAnalysisCommand}"
+                            Style="{StaticResource DangerButtonStyle}"
+                            HorizontalOptions="Center" />
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}"
+                   IsVisible="{Binding HasResults}">
+                <StackLayout Spacing="15">
+                    <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                        <Label Grid.Column="0"
+                               Text="Analysis Results"
+                               Style="{StaticResource SubtitleLabelStyle}" />
+                        <Button Grid.Column="1"
+                                Text="📊"
+                                Command="{Binding ExportReportCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12"
+                                Padding="10,5"
+                                ToolTipProperties.Text="Export report" />
+                        <Button Grid.Column="2"
+                                Text="📋"
+                                Command="{Binding CopyResultsCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12"
+                                Padding="10,5"
+                                ToolTipProperties.Text="Copy results" />
+                        <Button Grid.Column="3"
+                                Text="💾"
+                                Command="{Binding SaveResultsCommand}"
+                                Style="{StaticResource BaseButtonStyle}"
+                                FontSize="12"
+                                Padding="10,5"
+                                ToolTipProperties.Text="Save results" />
+                    </Grid>
+                    <!-- $1 -->
+                    <StackLayout Spacing="10"
+                               IsVisible="{Binding HasSummary}">
+                        <Label Text="📝 Document Summary"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontAttributes="Bold" />
+                        <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}"
+                               CornerRadius="10"
+                               Padding="15">
+                            <Label Text="{Binding DocumentSummary}"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   LineBreakMode="WordWrap" />
+                        </Frame>
+                    </StackLayout>
+                    <!-- $1 -->
+                    <StackLayout Spacing="10"
+                               IsVisible="{Binding HasKeyInfo}">
+                        <Label Text="🔑 Key Information"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontAttributes="Bold" />
+                        <CollectionView ItemsSource="{Binding KeyInformation}"
+                                       HeightRequest="150">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame Style="{StaticResource CardFrameStyle}"
+                                           Margin="0,2"
+                                           Padding="10"
+                                           BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}">
+                                        <StackLayout Orientation="Horizontal"
+                                                   Spacing="10">
+                                            <Label Text="•"
+                                                   Style="{StaticResource BodyLabelStyle}"
+                                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                                   VerticalOptions="Start" />
+                                            <Label Text="{Binding}"
+                                                   Style="{StaticResource BodyLabelStyle}"
+                                                   FontSize="12"
+                                                   LineBreakMode="WordWrap"
+                                                   VerticalOptions="Center" />
+                                        </StackLayout>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                    <!-- $1 -->
+                    <StackLayout Spacing="10"
+                               IsVisible="{Binding HasEntities}">
+                        <Label Text="👥 Entities"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontAttributes="Bold" />
+                        <CollectionView ItemsSource="{Binding Entities}"
+                                       ItemsLayout="HorizontalList"
+                                       HeightRequest="40">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame BackgroundColor="{Binding TypeColor}"
+                                           CornerRadius="15"
+                                           Padding="10,5"
+                                           Margin="5,0"
+                                           HasShadow="False">
+                                        <Label Text="{Binding Name}"
+                                               TextColor="White"
+                                               FontSize="10"
+                                               FontAttributes="Bold" />
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                    <!-- $1 -->
+                    <StackLayout Spacing="10"
+                               IsVisible="{Binding HasTopics}">
+                        <Label Text="🏷️ Topics"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontAttributes="Bold" />
+                        <CollectionView ItemsSource="{Binding Topics}"
+                                       ItemsLayout="HorizontalList"
+                                       HeightRequest="40">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource SecondaryDark}}"
+                                           CornerRadius="15"
+                                           Padding="10,5"
+                                           Margin="5,0"
+                                           HasShadow="False">
+                                        <Label Text="{Binding Name}"
+                                               TextColor="White"
+                                               FontSize="10"
+                                               FontAttributes="Bold" />
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                    <!-- $1 -->
+                    <StackLayout Spacing="10"
+                               IsVisible="{Binding HasSentiment}">
+                        <Label Text="😊 Sentiment Analysis"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontAttributes="Bold" />
+                        <Grid ColumnDefinitions="*,*,*"
+                              ColumnSpacing="10">
+                            <Frame Grid.Column="0"
+                                   BackgroundColor="{Binding PositiveSentimentColor}"
+                                   CornerRadius="10"
+                                   Padding="10">
+                                <StackLayout Spacing="2">
+                                    <Label Text="Positive"
+                                           TextColor="White"
+                                           FontSize="10"
+                                           HorizontalOptions="Center" />
+                                    <Label Text="{Binding PositiveSentiment, StringFormat='{0:P0}'}"
+                                           TextColor="White"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           HorizontalOptions="Center" />
+                                </StackLayout>
+                            </Frame>
+                            <Frame Grid.Column="1"
+                                   BackgroundColor="{Binding NeutralSentimentColor}"
+                                   CornerRadius="10"
+                                   Padding="10">
+                                <StackLayout Spacing="2">
+                                    <Label Text="Neutral"
+                                           TextColor="White"
+                                           FontSize="10"
+                                           HorizontalOptions="Center" />
+                                    <Label Text="{Binding NeutralSentiment, StringFormat='{0:P0}'}"
+                                           TextColor="White"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           HorizontalOptions="Center" />
+                                </StackLayout>
+                            </Frame>
+                            <Frame Grid.Column="2"
+                                   BackgroundColor="{Binding NegativeSentimentColor}"
+                                   CornerRadius="10"
+                                   Padding="10">
+                                <StackLayout Spacing="2">
+                                    <Label Text="Negative"
+                                           TextColor="White"
+                                           FontSize="10"
+                                           HorizontalOptions="Center" />
+                                    <Label Text="{Binding NegativeSentiment, StringFormat='{0:P0}'}"
+                                           TextColor="White"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           HorizontalOptions="Center" />
+                                </StackLayout>
+                            </Frame>
+                        </Grid>
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
+

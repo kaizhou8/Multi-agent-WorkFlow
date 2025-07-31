@@ -1,0 +1,331 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="MultiAgent.Desktop.Views.SettingsPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="Settings"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}">
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="20">
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Label Grid.Column="0"
+                           Text="⚙️"
+                           FontSize="32"
+                           VerticalOptions="Center" />
+                    <StackLayout Grid.Column="1"
+                               Spacing="5"
+                               Margin="15,0">
+                        <Label Text="Settings"
+                               Style="{StaticResource TitleLabelStyle}" />
+                        <Label Text="Configure application preferences and system settings"
+                               Style="{StaticResource BodyLabelStyle}" />
+                        <Label Text=""
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="12" />
+                    </StackLayout>
+                    <Button Grid.Column="2"
+                            Text="Reset"
+                            Command="{Binding ResetSettingsCommand}"
+                            Style="{StaticResource DangerButtonStyle}"
+                            VerticalOptions="Center" />
+                </Grid>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Label Text="Connection Settings"
+                           Style="{StaticResource SubtitleLabelStyle}" />
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto"
+                          ColumnDefinitions="Auto,*"
+                          RowSpacing="15"
+                          ColumnSpacing="15">
+                        <!-- $1 -->
+                        <Label Grid.Row="0" Grid.Column="0"
+                               Text="API Endpoint:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Entry Grid.Row="0" Grid.Column="1"
+                               Text="{Binding ApiEndpoint}"
+                               Placeholder="https://localhost:5001"
+                               Keyboard="Url" />
+                        <!-- $1 -->
+                        <Label Grid.Row="1" Grid.Column="0"
+                               Text="SignalR Hub:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Entry Grid.Row="1" Grid.Column="1"
+                               Text="{Binding SignalRHubUrl}"
+                               Placeholder="https://localhost:5001/multiagent-hub"
+                               Keyboard="Url" />
+                        <!-- $1 -->
+                        <Label Grid.Row="2" Grid.Column="0"
+                               Text="Timeout (seconds):"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Entry Grid.Row="2" Grid.Column="1"
+                               Text="{Binding ConnectionTimeout}"
+                               Placeholder="30"
+                               Keyboard="Numeric" />
+                        <!-- $1 -->
+                        <Label Grid.Row="3" Grid.Column="0"
+                               Text="Auto Reconnect:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Switch Grid.Row="3" Grid.Column="1"
+                                IsToggled="{Binding AutoReconnect}"
+                                HorizontalOptions="Start" />
+                    </Grid>
+                    <Button Text="Test Connection"
+                            Command="{Binding TestConnectionCommand}"
+                            Style="{StaticResource BaseButtonStyle}"
+                            IsEnabled="{Binding IsNotTesting}" />
+                    <Label Text="{Binding ConnectionStatus}"
+                           Style="{StaticResource BodyLabelStyle}"
+                           TextColor="{Binding ConnectionStatusColor}"
+                           IsVisible="{Binding HasConnectionStatus}" />
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Label Text="Appearance"
+                           Style="{StaticResource SubtitleLabelStyle}" />
+                    <Grid RowDefinitions="Auto,Auto,Auto"
+                          ColumnDefinitions="Auto,*"
+                          RowSpacing="15"
+                          ColumnSpacing="15">
+                        <!-- $1 -->
+                        <Label Grid.Row="0" Grid.Column="0"
+                               Text="Theme:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Picker Grid.Row="0" Grid.Column="1"
+                                ItemsSource="{Binding AvailableThemes}"
+                                SelectedItem="{Binding SelectedTheme}"
+                                Title="Select Theme" />
+                        <!-- $1 -->
+                        <Label Grid.Row="1" Grid.Column="0"
+                               Text="Language:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Picker Grid.Row="1" Grid.Column="1"
+                                ItemsSource="{Binding AvailableLanguages}"
+                                SelectedItem="{Binding SelectedLanguage}"
+                                Title="Select Language" />
+                        <!-- $1 -->
+                        <Label Grid.Row="2" Grid.Column="0"
+                               Text="Font Size:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <StackLayout Grid.Row="2" Grid.Column="1"
+                                   Orientation="Horizontal"
+                                   Spacing="10">
+                            <Slider Value="{Binding FontSize}"
+                                    Minimum="12"
+                                    Maximum="20"
+                                    WidthRequest="200" />
+                            <Label Text="{Binding FontSize, StringFormat='{0:F0}px'}"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   VerticalOptions="Center" />
+                        </StackLayout>
+                    </Grid>
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Label Text="Notifications"
+                           Style="{StaticResource SubtitleLabelStyle}" />
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto"
+                          ColumnDefinitions="Auto,*"
+                          RowSpacing="15"
+                          ColumnSpacing="15">
+                        <!-- $1 -->
+                        <Label Grid.Row="0" Grid.Column="0"
+                               Text="Enable Notifications:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Switch Grid.Row="0" Grid.Column="1"
+                                IsToggled="{Binding NotificationsEnabled}"
+                                HorizontalOptions="Start" />
+                        <!-- $1 -->
+                        <Label Grid.Row="1" Grid.Column="0"
+                               Text="Agent Status Changes:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Switch Grid.Row="1" Grid.Column="1"
+                                IsToggled="{Binding AgentNotifications}"
+                                HorizontalOptions="Start"
+                                IsEnabled="{Binding NotificationsEnabled}" />
+                        <!-- $1 -->
+                        <Label Grid.Row="2" Grid.Column="0"
+                               Text="Workflow Completion:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Switch Grid.Row="2" Grid.Column="1"
+                                IsToggled="{Binding WorkflowNotifications}"
+                                HorizontalOptions="Start"
+                                IsEnabled="{Binding NotificationsEnabled}" />
+                        <!-- $1 -->
+                        <Label Grid.Row="3" Grid.Column="0"
+                               Text="System Alerts:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Switch Grid.Row="3" Grid.Column="1"
+                                IsToggled="{Binding SystemNotifications}"
+                                HorizontalOptions="Start"
+                                IsEnabled="{Binding NotificationsEnabled}" />
+                    </Grid>
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Label Text="Performance"
+                           Style="{StaticResource SubtitleLabelStyle}" />
+                    <Grid RowDefinitions="Auto,Auto,Auto"
+                          ColumnDefinitions="Auto,*"
+                          RowSpacing="15"
+                          ColumnSpacing="15">
+                        <!-- $1 -->
+                        <Label Grid.Row="0" Grid.Column="0"
+                               Text="Refresh Interval:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <StackLayout Grid.Row="0" Grid.Column="1"
+                                   Orientation="Horizontal"
+                                   Spacing="10">
+                            <Slider Value="{Binding RefreshInterval}"
+                                    Minimum="5"
+                                    Maximum="60"
+                                    WidthRequest="200" />
+                            <Label Text="{Binding RefreshInterval, StringFormat='{0:F0}s'}"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   VerticalOptions="Center" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <Label Grid.Row="1" Grid.Column="0"
+                               Text="Max Log Entries:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Entry Grid.Row="1" Grid.Column="1"
+                               Text="{Binding MaxLogEntries}"
+                               Placeholder="1000"
+                               Keyboard="Numeric" />
+                        <!-- $1 -->
+                        <Label Grid.Row="2" Grid.Column="0"
+                               Text="Enable Caching:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Switch Grid.Row="2" Grid.Column="1"
+                                IsToggled="{Binding CachingEnabled}"
+                                HorizontalOptions="Start" />
+                    </Grid>
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Label Text="Security"
+                           Style="{StaticResource SubtitleLabelStyle}" />
+                    <Grid RowDefinitions="Auto,Auto,Auto"
+                          ColumnDefinitions="Auto,*"
+                          RowSpacing="15"
+                          ColumnSpacing="15">
+                        <!-- $1 -->
+                        <Label Grid.Row="0" Grid.Column="0"
+                               Text="Remember Login:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Switch Grid.Row="0" Grid.Column="1"
+                                IsToggled="{Binding RememberLogin}"
+                                HorizontalOptions="Start" />
+                        <!-- $1 -->
+                        <Label Grid.Row="1" Grid.Column="0"
+                               Text="Auto Logout (minutes):"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Entry Grid.Row="1" Grid.Column="1"
+                               Text="{Binding AutoLogoutMinutes}"
+                               Placeholder="30"
+                               Keyboard="Numeric"
+                               IsEnabled="{Binding RememberLogin}" />
+                        <!-- $1 -->
+                        <Label Grid.Row="2" Grid.Column="0"
+                               Text="Require Auth for Actions:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Switch Grid.Row="2" Grid.Column="1"
+                                IsToggled="{Binding RequireAuthForActions}"
+                                HorizontalOptions="Start" />
+                    </Grid>
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Label Text="About"
+                           Style="{StaticResource SubtitleLabelStyle}" />
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto"
+                          ColumnDefinitions="Auto,*"
+                          RowSpacing="10"
+                          ColumnSpacing="15">
+                        <Label Grid.Row="0" Grid.Column="0"
+                               Text="Application:"
+                               Style="{StaticResource BodyLabelStyle}" />
+                        <Label Grid.Row="0" Grid.Column="1"
+                               Text="Multi-Agent Desktop"
+                               Style="{StaticResource BodyLabelStyle}" />
+                        <Label Grid.Row="1" Grid.Column="0"
+                               Text="Version:"
+                               Style="{StaticResource BodyLabelStyle}" />
+                        <Label Grid.Row="1" Grid.Column="1"
+                               Text="{Binding AppVersion}"
+                               Style="{StaticResource BodyLabelStyle}" />
+                        <Label Grid.Row="2" Grid.Column="0"
+                               Text="Build:"
+                               Style="{StaticResource BodyLabelStyle}" />
+                        <Label Grid.Row="2" Grid.Column="1"
+                               Text="{Binding BuildNumber}"
+                               Style="{StaticResource BodyLabelStyle}" />
+                        <Label Grid.Row="3" Grid.Column="0"
+                               Text="Platform:"
+                               Style="{StaticResource BodyLabelStyle}" />
+                        <Label Grid.Row="3" Grid.Column="1"
+                               Text="{Binding Platform}"
+                               Style="{StaticResource BodyLabelStyle}" />
+                    </Grid>
+                    <StackLayout Orientation="Horizontal"
+                               Spacing="15"
+                               HorizontalOptions="Center">
+                        <Button Text="Check Updates"
+                                Command="{Binding CheckUpdatesCommand}"
+                                Style="{StaticResource BaseButtonStyle}" />
+                        <Button Text="View Logs"
+                                Command="{Binding ViewLogsCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}" />
+                        <Button Text="Export Settings"
+                                Command="{Binding ExportSettingsCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}" />
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <StackLayout Orientation="Horizontal"
+                       Spacing="15"
+                       HorizontalOptions="Center">
+                <Button Text="Save Settings"
+                        Command="{Binding SaveSettingsCommand}"
+                        Style="{StaticResource BaseButtonStyle}"
+                        WidthRequest="150" />
+                <Button Text="Cancel"
+                        Command="{Binding CancelCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        WidthRequest="150" />
+            </StackLayout>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
+

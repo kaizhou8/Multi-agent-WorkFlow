@@ -1,0 +1,414 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="MultiAgent.Desktop.Views.WorkflowDesignerPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="Workflow Designer"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}">
+    <Grid RowDefinitions="Auto,*">
+        <!-- $1 -->
+        <Frame Grid.Row="0"
+               Style="{StaticResource CardFrameStyle}"
+               Margin="10,10,10,5">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto">
+                <!-- $1 -->
+                <StackLayout Grid.Column="0"
+                           Orientation="Horizontal"
+                           Spacing="10">
+                    <Label Text="🔧"
+                           FontSize="24"
+                           VerticalOptions="Center" />
+                    <StackLayout Spacing="2">
+                        <Label Text="{Binding WorkflowName, StringFormat='Workflow: {0}'}"
+                               Style="{StaticResource SubtitleLabelStyle}" />
+                        <Label Text="{Binding WorkflowStatus, StringFormat='Status: {0}'}"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="12" />
+                    </StackLayout>
+                </StackLayout>
+                <!-- $1 -->
+                <Label Grid.Column="1" />
+                <!-- $1 -->
+                <Button Grid.Column="2"
+                        Text="Save"
+                        Command="{Binding SaveWorkflowCommand}"
+                        Style="{StaticResource BaseButtonStyle}"
+                        FontSize="12"
+                        Margin="5,0" />
+                <Button Grid.Column="3"
+                        Text="Validate"
+                        Command="{Binding ValidateWorkflowCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        FontSize="12"
+                        Margin="5,0" />
+                <Button Grid.Column="4"
+                        Text="Test Run"
+                        Command="{Binding TestRunCommand}"
+                        Style="{StaticResource BaseButtonStyle}"
+                        FontSize="12"
+                        Margin="5,0" />
+                <Button Grid.Column="5"
+                        Text="Export"
+                        Command="{Binding ExportWorkflowCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        FontSize="12" />
+            </Grid>
+        </Frame>
+        <!-- $1 -->
+        <Grid Grid.Row="1"
+              ColumnDefinitions="250,*,300"
+              Margin="10,5,10,10">
+            <!-- $1 -->
+            <Frame Grid.Column="0"
+                   Style="{StaticResource CardFrameStyle}"
+                   Margin="0,0,5,0">
+                <ScrollView>
+                    <StackLayout Spacing="15">
+                        <!-- $1 -->
+                        <StackLayout Spacing="10">
+                            <Label Text="Workflow Properties"
+                                   Style="{StaticResource SubtitleLabelStyle}" />
+                            <StackLayout Spacing="8">
+                                <Label Text="Name"
+                                       Style="{StaticResource BodyLabelStyle}"
+                                       FontSize="12" />
+                                <Entry Text="{Binding WorkflowName}"
+                                       FontSize="12" />
+                                <Label Text="Description"
+                                       Style="{StaticResource BodyLabelStyle}"
+                                       FontSize="12" />
+                                <Editor Text="{Binding WorkflowDescription}"
+                                        HeightRequest="60"
+                                        FontSize="12" />
+                                <Label Text="Execution Mode"
+                                       Style="{StaticResource BodyLabelStyle}"
+                                       FontSize="12" />
+                                <Picker ItemsSource="{Binding ExecutionModes}"
+                                        SelectedItem="{Binding SelectedExecutionMode}"
+                                        FontSize="12" />
+                            </StackLayout>
+                        </StackLayout>
+                        <!-- $1 -->
+                        <StackLayout Spacing="10">
+                            <Label Text="Available Steps"
+                                   Style="{StaticResource SubtitleLabelStyle}" />
+                            <CollectionView ItemsSource="{Binding AvailableStepTypes}"
+                                           HeightRequest="300">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Frame Style="{StaticResource CardFrameStyle}"
+                                               Margin="0,2"
+                                               Padding="10"
+                                               BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}">
+                                            <StackLayout Spacing="5">
+                                                <StackLayout Orientation="Horizontal"
+                                                           Spacing="8">
+                                                    <Label Text="{Binding Icon}"
+                                                           FontSize="16"
+                                                           VerticalOptions="Center" />
+                                                    <Label Text="{Binding Name}"
+                                                           Style="{StaticResource BodyLabelStyle}"
+                                                           FontSize="12"
+                                                           FontAttributes="Bold" />
+                                                </StackLayout>
+                                                <Label Text="{Binding Description}"
+                                                       Style="{StaticResource BodyLabelStyle}"
+                                                       FontSize="10"
+                                                       LineBreakMode="WordWrap" />
+                                                <Button Text="Add to Workflow"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AddStepCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Style="{StaticResource BaseButtonStyle}"
+                                                        FontSize="10"
+                                                        HeightRequest="30" />
+                                            </StackLayout>
+                                        </Frame>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </StackLayout>
+                    </StackLayout>
+                </ScrollView>
+            </Frame>
+            <!-- $1 -->
+            <Frame Grid.Column="1"
+                   Style="{StaticResource CardFrameStyle}"
+                   Margin="5,0">
+                <Grid RowDefinitions="Auto,*">
+                    <!-- $1 -->
+                    <StackLayout Grid.Row="0"
+                               Orientation="Horizontal"
+                               Spacing="10"
+                               Margin="0,0,0,10">
+                        <Label Text="Design Canvas"
+                               Style="{StaticResource SubtitleLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Button Text="🔍+"
+                                Command="{Binding ZoomInCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12"
+                                Padding="8,5" />
+                        <Button Text="🔍-"
+                                Command="{Binding ZoomOutCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12"
+                                Padding="8,5" />
+                        <Button Text="🎯"
+                                Command="{Binding FitToScreenCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12"
+                                Padding="8,5"
+                                ToolTipProperties.Text="Fit to screen" />
+                        <Button Text="🗑️"
+                                Command="{Binding ClearCanvasCommand}"
+                                Style="{StaticResource DangerButtonStyle}"
+                                FontSize="12"
+                                Padding="8,5"
+                                ToolTipProperties.Text="Clear canvas" />
+                    </StackLayout>
+                    <!-- $1 -->
+                    <ScrollView Grid.Row="1"
+                               Orientation="Both"
+                               BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}">
+                        <StackLayout Spacing="20"
+                                   Padding="20"
+                                   MinimumWidthRequest="600"
+                                   MinimumHeightRequest="400">
+                            <!-- $1 -->
+                            <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                   CornerRadius="25"
+                                   Padding="15,10"
+                                   HorizontalOptions="Center">
+                                <Label Text="🚀 START"
+                                       TextColor="White"
+                                       FontAttributes="Bold" />
+                            </Frame>
+                            <!-- $1 -->
+                            <CollectionView ItemsSource="{Binding WorkflowSteps}"
+                                           ItemsLayout="VerticalList">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackLayout Spacing="10"
+                                                   Margin="0,10">
+                                            <!-- $1 -->
+                                            <BoxView BackgroundColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray600}}"
+                                                     WidthRequest="2"
+                                                     HeightRequest="30"
+                                                     HorizontalOptions="Center" />
+                                            <!-- $1 -->
+                                            <Frame Style="{StaticResource CardFrameStyle}"
+                                                   BackgroundColor="{Binding StatusColor}"
+                                                   HorizontalOptions="Center"
+                                                   WidthRequest="250">
+                                                <Grid ColumnDefinitions="Auto,*,Auto"
+                                                      ColumnSpacing="10">
+                                                    <!-- $1 -->
+                                                    <Label Grid.Column="0"
+                                                           Text="{Binding Icon}"
+                                                           FontSize="20"
+                                                           VerticalOptions="Center" />
+                                                    <!-- $1 -->
+                                                    <StackLayout Grid.Column="1"
+                                                               Spacing="2">
+                                                        <Label Text="{Binding Name}"
+                                                               Style="{StaticResource BodyLabelStyle}"
+                                                               FontAttributes="Bold"
+                                                               FontSize="12" />
+                                                        <Label Text="{Binding Type}"
+                                                               Style="{StaticResource BodyLabelStyle}"
+                                                               FontSize="10" />
+                                                        <Label Text="{Binding Status}"
+                                                               Style="{StaticResource BodyLabelStyle}"
+                                                               FontSize="10"
+                                                               TextColor="{Binding StatusTextColor}" />
+                                                    </StackLayout>
+                                                    <!-- $1 -->
+                                                    <StackLayout Grid.Column="2"
+                                                               Spacing="5">
+                                                        <Button Text="✏️"
+                                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditStepCommand}"
+                                                                CommandParameter="{Binding}"
+                                                                Style="{StaticResource SecondaryButtonStyle}"
+                                                                FontSize="10"
+                                                                Padding="5"
+                                                                ToolTipProperties.Text="Edit step" />
+                                                        <Button Text="❌"
+                                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveStepCommand}"
+                                                                CommandParameter="{Binding}"
+                                                                Style="{StaticResource DangerButtonStyle}"
+                                                                FontSize="10"
+                                                                Padding="5"
+                                                                ToolTipProperties.Text="Remove step" />
+                                                    </StackLayout>
+                                                </Grid>
+                                            </Frame>
+                                        </StackLayout>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                            <!-- $1 -->
+                            <StackLayout Spacing="10"
+                                       HorizontalOptions="Center">
+                                <BoxView BackgroundColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray600}}"
+                                         WidthRequest="2"
+                                         HeightRequest="30"
+                                         HorizontalOptions="Center"
+                                         IsVisible="{Binding HasSteps}" />
+                                <Button Text="➕ Add Step"
+                                        Command="{Binding ShowAddStepDialogCommand}"
+                                        Style="{StaticResource BaseButtonStyle}"
+                                        WidthRequest="200" />
+                            </StackLayout>
+                            <!-- $1 -->
+                            <StackLayout Spacing="10"
+                                       HorizontalOptions="Center">
+                                <BoxView BackgroundColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray600}}"
+                                         WidthRequest="2"
+                                         HeightRequest="30"
+                                         HorizontalOptions="Center"
+                                         IsVisible="{Binding HasSteps}" />
+                                <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Tertiary}, Dark={StaticResource TertiaryDark}}"
+                                       CornerRadius="25"
+                                       Padding="15,10">
+                                    <Label Text="🏁 END"
+                                           TextColor="White"
+                                           FontAttributes="Bold" />
+                                </Frame>
+                            </StackLayout>
+                        </StackLayout>
+                    </ScrollView>
+                </Grid>
+            </Frame>
+            <!-- $1 -->
+            <Frame Grid.Column="2"
+                   Style="{StaticResource CardFrameStyle}"
+                   Margin="5,0,0,0">
+                <ScrollView>
+                    <StackLayout Spacing="15">
+                        <!-- $1 -->
+                        <StackLayout Spacing="10"
+                                   IsVisible="{Binding HasSelectedStep}">
+                            <Label Text="Step Properties"
+                                   Style="{StaticResource SubtitleLabelStyle}" />
+                            <StackLayout Spacing="8">
+                                <Label Text="Name"
+                                       Style="{StaticResource BodyLabelStyle}"
+                                       FontSize="12" />
+                                <Entry Text="{Binding SelectedStep.Name}"
+                                       FontSize="12" />
+                                <Label Text="Description"
+                                       Style="{StaticResource BodyLabelStyle}"
+                                       FontSize="12" />
+                                <Editor Text="{Binding SelectedStep.Description}"
+                                        HeightRequest="60"
+                                        FontSize="12" />
+                                <Label Text="Agent"
+                                       Style="{StaticResource BodyLabelStyle}"
+                                       FontSize="12" />
+                                <Picker ItemsSource="{Binding AvailableAgents}"
+                                        ItemDisplayBinding="{Binding Name}"
+                                        SelectedItem="{Binding SelectedStep.Agent}"
+                                        FontSize="12" />
+                                <Label Text="Timeout (seconds)"
+                                       Style="{StaticResource BodyLabelStyle}"
+                                       FontSize="12" />
+                                <Entry Text="{Binding SelectedStep.TimeoutSeconds}"
+                                       Keyboard="Numeric"
+                                       FontSize="12" />
+                                <Label Text="Retry Count"
+                                       Style="{StaticResource BodyLabelStyle}"
+                                       FontSize="12" />
+                                <Stepper Value="{Binding SelectedStep.RetryCount}"
+                                         Minimum="0"
+                                         Maximum="10"
+                                         Increment="1" />
+                                <Label Text="{Binding SelectedStep.RetryCount, StringFormat='Retries: {0}'}"
+                                       Style="{StaticResource BodyLabelStyle}"
+                                       FontSize="10"
+                                       HorizontalOptions="Center" />
+                            </StackLayout>
+                        </StackLayout>
+                        <!-- $1 -->
+                        <StackLayout Spacing="10"
+                                   IsVisible="{Binding HasSelectedStep}">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Grid.Column="0"
+                                       Text="Parameters"
+                                       Style="{StaticResource SubtitleLabelStyle}" />
+                                <Button Grid.Column="1"
+                                        Text="Add"
+                                        Command="{Binding AddParameterCommand}"
+                                        Style="{StaticResource BaseButtonStyle}"
+                                        FontSize="10" />
+                            </Grid>
+                            <CollectionView ItemsSource="{Binding SelectedStep.Parameters}"
+                                           HeightRequest="150"
+                                           EmptyView="No parameters">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Frame Style="{StaticResource CardFrameStyle}"
+                                               Margin="0,2"
+                                               Padding="8"
+                                               BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}">
+                                            <Grid ColumnDefinitions="*,*,Auto"
+                                                  ColumnSpacing="5">
+                                                <Entry Grid.Column="0"
+                                                       Text="{Binding Key}"
+                                                       Placeholder="Key"
+                                                       FontSize="10" />
+                                                <Entry Grid.Column="1"
+                                                       Text="{Binding Value}"
+                                                       Placeholder="Value"
+                                                       FontSize="10" />
+                                                <Button Grid.Column="2"
+                                                        Text="❌"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveParameterCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Style="{StaticResource DangerButtonStyle}"
+                                                        FontSize="8"
+                                                        Padding="4" />
+                                            </Grid>
+                                        </Frame>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </StackLayout>
+                        <!-- $1 -->
+                        <StackLayout Spacing="10">
+                            <Label Text="Validation"
+                                   Style="{StaticResource SubtitleLabelStyle}" />
+                            <StackLayout Spacing="5"
+                                       IsVisible="{Binding HasValidationResults}">
+                                <CollectionView ItemsSource="{Binding ValidationResults}"
+                                               HeightRequest="100">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackLayout Orientation="Horizontal"
+                                                       Spacing="8"
+                                                       Margin="0,2">
+                                                <Label Text="{Binding Icon}"
+                                                       FontSize="14"
+                                                       VerticalOptions="Center" />
+                                                <Label Text="{Binding Message}"
+                                                       Style="{StaticResource BodyLabelStyle}"
+                                                       FontSize="10"
+                                                       TextColor="{Binding MessageColor}"
+                                                       VerticalOptions="Center" />
+                                            </StackLayout>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </StackLayout>
+                            <Label Text="No validation results"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   HorizontalOptions="Center"
+                                   IsVisible="{Binding HasNoValidationResults}" />
+                        </StackLayout>
+                    </StackLayout>
+                </ScrollView>
+            </Frame>
+        </Grid>
+    </Grid>
+</ContentPage>
+

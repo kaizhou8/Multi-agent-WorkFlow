@@ -1,0 +1,340 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="MultiAgent.Desktop.Views.AgentConfigurationPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="Agent Configuration"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}">
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="20">
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                    <Label Grid.Column="0"
+                           Text="⚙️"
+                           FontSize="32"
+                           VerticalOptions="Center" />
+                    <StackLayout Grid.Column="1"
+                               Spacing="5"
+                               Margin="15,0">
+                        <Label Text="{Binding AgentName, StringFormat='Configure Agent: {0}'}"
+                               Style="{StaticResource TitleLabelStyle}" />
+                        <Label Text="Modify agent settings and capabilities"
+                               Style="{StaticResource BodyLabelStyle}" />
+                        <Label Text=""
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="12" />
+                    </StackLayout>
+                    <Button Grid.Column="2"
+                            Text="Reset"
+                            Command="{Binding ResetConfigurationCommand}"
+                            Style="{StaticResource DangerButtonStyle}"
+                            VerticalOptions="Center"
+                            Margin="5,0" />
+                    <Button Grid.Column="3"
+                            Text="Save"
+                            Command="{Binding SaveConfigurationCommand}"
+                            Style="{StaticResource BaseButtonStyle}"
+                            VerticalOptions="Center" />
+                </Grid>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Label Text="Basic Configuration"
+                           Style="{StaticResource SubtitleLabelStyle}" />
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                          ColumnDefinitions="Auto,*"
+                          RowSpacing="15"
+                          ColumnSpacing="15">
+                        <!-- $1 -->
+                        <Label Grid.Row="0" Grid.Column="0"
+                               Text="Name"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Entry Grid.Row="0" Grid.Column="1"
+                               Text="{Binding AgentName}"
+                               Placeholder="Enter agent name" />
+                        <!-- $1 -->
+                        <Label Grid.Row="1" Grid.Column="0"
+                               Text="Description"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Start"
+                               Margin="0,10,0,0" />
+                        <Editor Grid.Row="1" Grid.Column="1"
+                                Text="{Binding AgentDescription}"
+                                Placeholder="Enter agent description"
+                                HeightRequest="80" />
+                        <!-- $1 -->
+                        <Label Grid.Row="2" Grid.Column="0"
+                               Text="Type"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Picker Grid.Row="2" Grid.Column="1"
+                                ItemsSource="{Binding AvailableAgentTypes}"
+                                SelectedItem="{Binding SelectedAgentType}"
+                                Title="Select agent type /
+                        <!-- $1 -->
+                        <Label Grid.Row="3" Grid.Column="0"
+                               Text="Auto Start"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Switch Grid.Row="3" Grid.Column="1"
+                                IsToggled="{Binding AutoStart}"
+                                HorizontalOptions="Start" />
+                        <!-- $1 -->
+                        <Label Grid.Row="4" Grid.Column="0"
+                               Text="Priority"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <StackLayout Grid.Row="4" Grid.Column="1"
+                                   Orientation="Horizontal"
+                                   Spacing="10">
+                            <Slider Value="{Binding Priority}"
+                                    Minimum="1"
+                                    Maximum="10"
+                                    WidthRequest="200" />
+                            <Label Text="{Binding Priority, StringFormat='{0:F0}'}"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   VerticalOptions="Center"
+                                   WidthRequest="30" />
+                        </StackLayout>
+                    </Grid>
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0"
+                               Text="Capabilities"
+                               Style="{StaticResource SubtitleLabelStyle}" />
+                        <Button Grid.Column="1"
+                                Text="Add Capability"
+                                Command="{Binding AddCapabilityCommand}"
+                                Style="{StaticResource BaseButtonStyle}"
+                                FontSize="12" />
+                    </Grid>
+                    <CollectionView ItemsSource="{Binding Capabilities}"
+                                   HeightRequest="200"
+                                   EmptyView="No capabilities configured">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame Style="{StaticResource CardFrameStyle}"
+                                       Margin="0,5"
+                                       BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}">
+                                    <Grid ColumnDefinitions="Auto,*,Auto,Auto"
+                                          ColumnSpacing="15">
+                                        <!-- $1 -->
+                                        <Label Grid.Column="0"
+                                               Text="{Binding Icon}"
+                                               FontSize="20"
+                                               VerticalOptions="Center" />
+                                        <!-- $1 -->
+                                        <StackLayout Grid.Column="1"
+                                                   Spacing="5">
+                                            <Label Text="{Binding Name}"
+                                                   Style="{StaticResource BodyLabelStyle}"
+                                                   FontAttributes="Bold" />
+                                            <Label Text="{Binding Description}"
+                                                   Style="{StaticResource BodyLabelStyle}"
+                                                   FontSize="12"
+                                                   LineBreakMode="TailTruncation" />
+                                        </StackLayout>
+                                        <!-- $1 -->
+                                        <Switch Grid.Column="2"
+                                                IsToggled="{Binding IsEnabled}"
+                                                VerticalOptions="Center" />
+                                        <!-- $1 -->
+                                        <Button Grid.Column="3"
+                                                Text="❌"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveCapabilityCommand}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource DangerButtonStyle}"
+                                                FontSize="12"
+                                                Padding="8,5" />
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Label Text="Advanced Settings"
+                           Style="{StaticResource SubtitleLabelStyle}" />
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto"
+                          ColumnDefinitions="Auto,*"
+                          RowSpacing="15"
+                          ColumnSpacing="15">
+                        <!-- $1 -->
+                        <Label Grid.Row="0" Grid.Column="0"
+                               Text="Max Concurrent Tasks:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <StackLayout Grid.Row="0" Grid.Column="1"
+                                   Orientation="Horizontal"
+                                   Spacing="10">
+                            <Slider Value="{Binding MaxConcurrentTasks}"
+                                    Minimum="1"
+                                    Maximum="20"
+                                    WidthRequest="200" />
+                            <Label Text="{Binding MaxConcurrentTasks, StringFormat='{0:F0}'}"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   VerticalOptions="Center"
+                                   WidthRequest="30" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <Label Grid.Row="1" Grid.Column="0"
+                               Text="Timeout (seconds):"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Entry Grid.Row="1" Grid.Column="1"
+                               Text="{Binding TimeoutSeconds}"
+                               Keyboard="Numeric"
+                               Placeholder="Enter timeout in seconds" />
+                        <!-- $1 -->
+                        <Label Grid.Row="2" Grid.Column="0"
+                               Text="Retry Count:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <StackLayout Grid.Row="2" Grid.Column="1"
+                                   Orientation="Horizontal"
+                                   Spacing="10">
+                            <Slider Value="{Binding RetryCount}"
+                                    Minimum="0"
+                                    Maximum="10"
+                                    WidthRequest="200" />
+                            <Label Text="{Binding RetryCount, StringFormat='{0:F0}'}"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   VerticalOptions="Center"
+                                   WidthRequest="30" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <Label Grid.Row="3" Grid.Column="0"
+                               Text="Log Level:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Picker Grid.Row="3" Grid.Column="1"
+                                ItemsSource="{Binding AvailableLogLevels}"
+                                SelectedItem="{Binding SelectedLogLevel}"
+                                Title="Select log level" />
+                    </Grid>
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0"
+                               Text="Environment Variables"
+                               Style="{StaticResource SubtitleLabelStyle}" />
+                        <Button Grid.Column="1"
+                                Text="Add Variable"
+                                Command="{Binding AddEnvironmentVariableCommand}"
+                                Style="{StaticResource BaseButtonStyle}"
+                                FontSize="12" />
+                    </Grid>
+                    <CollectionView ItemsSource="{Binding EnvironmentVariables}"
+                                   HeightRequest="150"
+                                   EmptyView="No environment variables">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame Style="{StaticResource CardFrameStyle}"
+                                       Margin="0,5"
+                                       BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}">
+                                    <Grid ColumnDefinitions="*,*,Auto"
+                                          ColumnSpacing="10">
+                                        <!-- $1 -->
+                                        <Entry Grid.Column="0"
+                                               Text="{Binding Key}"
+                                               Placeholder="Variable name" />
+                                        <!-- $1 -->
+                                        <Entry Grid.Column="1"
+                                               Text="{Binding Value}"
+                                               Placeholder="Variable value" />
+                                        <!-- $1 -->
+                                        <Button Grid.Column="2"
+                                                Text="❌"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RemoveEnvironmentVariableCommand}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource DangerButtonStyle}"
+                                                FontSize="12"
+                                                Padding="8,5" />
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Grid ColumnDefinitions="*,Auto,Auto">
+                        <Label Grid.Column="0"
+                               Text="Raw Configuration (JSON)"
+                               Style="{StaticResource SubtitleLabelStyle}" />
+                        <Button Grid.Column="1"
+                                Text="Format"
+                                Command="{Binding FormatJsonCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12"
+                                Margin="5,0" />
+                        <Button Grid.Column="2"
+                                Text="Validate"
+                                Command="{Binding ValidateJsonCommand}"
+                                Style="{StaticResource BaseButtonStyle}"
+                                FontSize="12" />
+                    </Grid>
+                    <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}"
+                           CornerRadius="10"
+                           Padding="15"
+                           HeightRequest="200">
+                        <Editor Text="{Binding ConfigurationJson}"
+                                FontFamily="Consolas"
+                                FontSize="12"
+                                Placeholder="Configuration JSON will appear here" />
+                    </Frame>
+                    <!-- $1 -->
+                    <StackLayout Orientation="Horizontal"
+                               Spacing="10"
+                               IsVisible="{Binding HasJsonStatus}">
+                        <Frame BackgroundColor="{Binding JsonStatusColor}"
+                               CornerRadius="10"
+                               Padding="8,4"
+                               HasShadow="False">
+                            <Label Text="{Binding JsonStatus}"
+                                   TextColor="White"
+                                   FontSize="12" />
+                        </Frame>
+                        <Label Text="{Binding JsonValidationMessage}"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="12"
+                               VerticalOptions="Center" />
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <StackLayout Orientation="Horizontal"
+                       Spacing="15"
+                       HorizontalOptions="Center">
+                <Button Text="Test Configuration"
+                        Command="{Binding TestConfigurationCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        WidthRequest="150" />
+                <Button Text="Export Configuration"
+                        Command="{Binding ExportConfigurationCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        WidthRequest="150" />
+                <Button Text="Import Configuration"
+                        Command="{Binding ImportConfigurationCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        WidthRequest="150" />
+            </StackLayout>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
+

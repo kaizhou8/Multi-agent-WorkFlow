@@ -1,0 +1,366 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="MultiAgent.Desktop.Views.AITextGenerationPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="AI Text Generation"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}">
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="20">
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Label Grid.Column="0"
+                           Text="📝"
+                           FontSize="32"
+                           VerticalOptions="Center" />
+                    <StackLayout Grid.Column="1"
+                               Spacing="5"
+                               Margin="15,0">
+                        <Label Text="AI Text Generation"
+                               Style="{StaticResource TitleLabelStyle}" />
+                        <Label Text="Generate high-quality text using advanced AI models"
+                               Style="{StaticResource BodyLabelStyle}" />
+                        <Label Text="
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="12" />
+                    </StackLayout>
+                    <Button Grid.Column="2"
+                            Text="Templates"
+                            Command="{Binding ShowTemplatesCommand}"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            VerticalOptions="Center" />
+                </Grid>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Label Text="Model Configuration"
+                           Style="{StaticResource SubtitleLabelStyle}" />
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto"
+                          ColumnDefinitions="Auto,*"
+                          RowSpacing="15"
+                          ColumnSpacing="15">
+                        <!-- $1 -->
+                        <Label Grid.Row="0" Grid.Column="0"
+                               Text="AI Model:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <Picker Grid.Row="0" Grid.Column="1"
+                                ItemsSource="{Binding AvailableModels}"
+                                ItemDisplayBinding="{Binding DisplayName}"
+                                SelectedItem="{Binding SelectedModel}"
+                                Title="Select AI Model" />
+                        <!-- $1 -->
+                        <Label Grid.Row="1" Grid.Column="0"
+                               Text="Max Tokens:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <StackLayout Grid.Row="1" Grid.Column="1"
+                                   Orientation="Horizontal"
+                                   Spacing="10">
+                            <Slider Value="{Binding MaxTokens}"
+                                    Minimum="50"
+                                    Maximum="4000"
+                                    WidthRequest="200" />
+                            <Label Text="{Binding MaxTokens, StringFormat='{0:F0}'}"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   VerticalOptions="Center"
+                                   WidthRequest="50" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <Label Grid.Row="2" Grid.Column="0"
+                               Text="Temperature:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <StackLayout Grid.Row="2" Grid.Column="1"
+                                   Orientation="Horizontal"
+                                   Spacing="10">
+                            <Slider Value="{Binding Temperature}"
+                                    Minimum="0"
+                                    Maximum="2"
+                                    WidthRequest="200" />
+                            <Label Text="{Binding Temperature, StringFormat='{0:F2}'}"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   VerticalOptions="Center"
+                                   WidthRequest="50" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <Label Grid.Row="3" Grid.Column="0"
+                               Text="Status:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               VerticalOptions="Center" />
+                        <StackLayout Grid.Row="3" Grid.Column="1"
+                                   Orientation="Horizontal"
+                                   Spacing="10">
+                            <Frame BackgroundColor="{Binding ModelStatusColor}"
+                                   CornerRadius="10"
+                                   Padding="8,4"
+                                   HasShadow="False">
+                                <Label Text="{Binding ModelStatus}"
+                                       TextColor="White"
+                                       FontSize="12" />
+                            </Frame>
+                            <Label Text="{Binding ModelResponseTime, StringFormat='Response: {0}ms'}"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   VerticalOptions="Center" />
+                        </StackLayout>
+                    </Grid>
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Grid ColumnDefinitions="*,Auto,Auto">
+                        <Label Grid.Column="0"
+                               Text="Input Prompt"
+                               Style="{StaticResource SubtitleLabelStyle}" />
+                        <Button Grid.Column="1"
+                                Text="Clear"
+                                Command="{Binding ClearPromptCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12"
+                                Margin="5,0" />
+                        <Button Grid.Column="2"
+                                Text="Examples"
+                                Command="{Binding ShowExamplesCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12" />
+                    </Grid>
+                    <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}"
+                           CornerRadius="10"
+                           Padding="15"
+                           HeightRequest="200">
+                        <Editor Text="{Binding InputPrompt}"
+                                Placeholder="Enter your prompt here..."
+                                FontSize="14"
+                                IsEnabled="{Binding IsNotGenerating}" />
+                    </Frame>
+                    <!-- $1 -->
+                    <StackLayout Orientation="Horizontal"
+                               Spacing="10"
+                               HorizontalOptions="Center">
+                        <Button Text="📧 Email"
+                                Command="{Binding UseTemplateCommand}"
+                                CommandParameter="email"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12" />
+                        <Button Text="📝 Article"
+                                Command="{Binding UseTemplateCommand}"
+                                CommandParameter="article"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12" />
+                        <Button Text="💼 Business"
+                                Command="{Binding UseTemplateCommand}"
+                                CommandParameter="business"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12" />
+                        <Button Text="🎨 Creative"
+                                Command="{Binding UseTemplateCommand}"
+                                CommandParameter="creative"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12" />
+                    </StackLayout>
+                    <!-- $1 -->
+                    <Button Text="Generate Text"
+                            Command="{Binding GenerateTextCommand}"
+                            Style="{StaticResource BaseButtonStyle}"
+                            FontSize="16"
+                            HeightRequest="50"
+                            IsEnabled="{Binding CanGenerate}"
+                            HorizontalOptions="Center"
+                            WidthRequest="200" />
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}"
+                   IsVisible="{Binding IsGenerating}">
+                <StackLayout Spacing="15">
+                    <Label Text="Generating Text..."
+                           Style="{StaticResource SubtitleLabelStyle}"
+                           HorizontalOptions="Center" />
+                    <ActivityIndicator IsRunning="{Binding IsGenerating}"
+                                     Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                     WidthRequest="40"
+                                     HeightRequest="40"
+                                     HorizontalOptions="Center" />
+                    <Label Text="{Binding GenerationStatus}"
+                           Style="{StaticResource BodyLabelStyle}"
+                           HorizontalOptions="Center"
+                           FontSize="12" />
+                    <Button Text="Cancel Generation"
+                            Command="{Binding CancelGenerationCommand}"
+                            Style="{StaticResource DangerButtonStyle}"
+                            HorizontalOptions="Center" />
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}"
+                   IsVisible="{Binding HasGeneratedText}">
+                <StackLayout Spacing="15">
+                    <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                        <Label Grid.Column="0"
+                               Text="Generated Text"
+                               Style="{StaticResource SubtitleLabelStyle}" />
+                        <Button Grid.Column="1"
+                                Text="📋"
+                                Command="{Binding CopyTextCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12"
+                                Padding="10,5"
+                                ToolTipProperties.Text="Copy to clipboard" />
+                        <Button Grid.Column="2"
+                                Text="💾"
+                                Command="{Binding SaveTextCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12"
+                                Padding="10,5"
+                                ToolTipProperties.Text="Save to file" />
+                        <Button Grid.Column="3"
+                                Text="🔄"
+                                Command="{Binding RegenerateCommand}"
+                                Style="{StaticResource BaseButtonStyle}"
+                                FontSize="12"
+                                Padding="10,5"
+                                ToolTipProperties.Text="Regenerate" />
+                    </Grid>
+                    <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}"
+                           CornerRadius="10"
+                           Padding="15"
+                           HeightRequest="300">
+                        <ScrollView>
+                            <Label Text="{Binding GeneratedText}"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="14"
+                                   LineBreakMode="WordWrap" />
+                        </ScrollView>
+                    </Frame>
+                    <!-- $1 -->
+                    <Grid ColumnDefinitions="*,*,*,*"
+                          ColumnSpacing="15">
+                        <StackLayout Grid.Column="0" Spacing="5">
+                            <Label Text="Words"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   HorizontalOptions="Center" />
+                            <Label Text="{Binding WordCount}"
+                                   Style="{StaticResource TitleLabelStyle}"
+                                   FontSize="18"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                        </StackLayout>
+                        <StackLayout Grid.Column="1" Spacing="5">
+                            <Label Text="Characters"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   HorizontalOptions="Center" />
+                            <Label Text="{Binding CharacterCount}"
+                                   Style="{StaticResource TitleLabelStyle}"
+                                   FontSize="18"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                        </StackLayout>
+                        <StackLayout Grid.Column="2" Spacing="5">
+                            <Label Text="Tokens Used"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   HorizontalOptions="Center" />
+                            <Label Text="{Binding TokensUsed}"
+                                   Style="{StaticResource TitleLabelStyle}"
+                                   FontSize="18"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                        </StackLayout>
+                        <StackLayout Grid.Column="3" Spacing="5">
+                            <Label Text="Time (ms)"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   HorizontalOptions="Center" />
+                            <Label Text="{Binding GenerationTime}"
+                                   Style="{StaticResource TitleLabelStyle}"
+                                   FontSize="18"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                        </StackLayout>
+                    </Grid>
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Grid ColumnDefinitions="*,Auto,Auto">
+                        <Label Grid.Column="0"
+                               Text="Generation History"
+                               Style="{StaticResource SubtitleLabelStyle}" />
+                        <Button Grid.Column="1"
+                                Text="🔄"
+                                Command="{Binding RefreshHistoryCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12"
+                                Padding="10,5" />
+                        <Button Grid.Column="2"
+                                Text="Clear"
+                                Command="{Binding ClearHistoryCommand}"
+                                Style="{StaticResource DangerButtonStyle}"
+                                FontSize="12" />
+                    </Grid>
+                    <CollectionView ItemsSource="{Binding GenerationHistory}"
+                                   HeightRequest="200"
+                                   EmptyView="No generation history">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame Style="{StaticResource CardFrameStyle}"
+                                       Margin="0,5"
+                                       BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}">
+                                    <Grid ColumnDefinitions="*,Auto"
+                                          ColumnSpacing="15">
+                                        <!-- $1 -->
+                                        <StackLayout Grid.Column="0"
+                                                   Spacing="5">
+                                            <Label Text="{Binding Prompt, StringFormat='Prompt: {0}'}"
+                                                   Style="{StaticResource BodyLabelStyle}"
+                                                   FontSize="12"
+                                                   LineBreakMode="TailTruncation"
+                                                   MaxLines="2" />
+                                            <StackLayout Orientation="Horizontal"
+                                                       Spacing="15">
+                                                <Label Text="{Binding CreatedAt, StringFormat='Time: {0:HH:mm:ss}'}"
+                                                       Style="{StaticResource BodyLabelStyle}"
+                                                       FontSize="10" />
+                                                <Label Text="{Binding WordCount, StringFormat='Words: {0}'}"
+                                                       Style="{StaticResource BodyLabelStyle}"
+                                                       FontSize="10" />
+                                                <Label Text="{Binding Model, StringFormat='Model: {0}'}"
+                                                       Style="{StaticResource BodyLabelStyle}"
+                                                       FontSize="10" />
+                                            </StackLayout>
+                                        </StackLayout>
+                                        <!-- $1 -->
+                                        <StackLayout Grid.Column="1"
+                                                   Orientation="Horizontal"
+                                                   Spacing="5">
+                                            <Button Text="View"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ViewHistoryItemCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Style="{StaticResource SecondaryButtonStyle}"
+                                                    FontSize="10"
+                                                    Padding="8,5" />
+                                            <Button Text="Reuse"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ReusePromptCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Style="{StaticResource BaseButtonStyle}"
+                                                    FontSize="10"
+                                                    Padding="8,5" />
+                                        </StackLayout>
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+            </Frame>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
+

@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="MultiAgent.Desktop.Views.LoginPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="Login"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}">
+    <ScrollView>
+        <Grid RowDefinitions="*,Auto,*"
+              Padding="40">
+            <!-- $1 -->
+            <BoxView Grid.Row="0" />
+            <!-- $1 -->
+            <Frame Grid.Row="1"
+                   Style="{StaticResource CardFrameStyle}"
+                   MaximumWidthRequest="400"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center">
+                <StackLayout Spacing="30">
+                    <!-- $1 -->
+                    <StackLayout Spacing="20"
+                                HorizontalOptions="Center">
+                        <Image Source="dotnet_bot.png"
+                               WidthRequest="100"
+                               HeightRequest="100" />
+                        <Label Text="Multi-Agent Desktop"
+                               Style="{StaticResource TitleLabelStyle}"
+                               HorizontalOptions="Center" />
+                        <Label Text="Please sign in to continue"
+                               Style="{StaticResource BodyLabelStyle}"
+                               HorizontalOptions="Center" />
+                    </StackLayout>
+                    <!-- $1 -->
+                    <StackLayout Spacing="20">
+                        <!-- $1 -->
+                        <StackLayout>
+                            <Label Text="Username"
+                                   Style="{StaticResource SubtitleLabelStyle}" />
+                            <Entry x:Name="UsernameEntry"
+                                   Text="{Binding Username}"
+                                   Placeholder="Enter your username"
+                                   BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray800}}"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
+                                   PlaceholderColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}"
+                                   FontSize="16"
+                                   HeightRequest="50"
+                                   ReturnType="Next"
+                                   ReturnCommand="{Binding FocusPasswordCommand}" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <StackLayout>
+                            <Label Text="Password"
+                                   Style="{StaticResource SubtitleLabelStyle}" />
+                            <Entry x:Name="PasswordEntry"
+                                   Text="{Binding Password}"
+                                   Placeholder="Enter your password"
+                                   IsPassword="True"
+                                   BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray800}}"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}"
+                                   PlaceholderColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}"
+                                   FontSize="16"
+                                   HeightRequest="50"
+                                   ReturnType="Done"
+                                   ReturnCommand="{Binding LoginCommand}" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <StackLayout Orientation="Horizontal"
+                                    Spacing="10">
+                            <CheckBox IsChecked="{Binding RememberMe}"
+                                     Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                            <Label Text="Remember me"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   VerticalOptions="Center" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <Label Text="{Binding ErrorMessage}"
+                               TextColor="{AppThemeBinding Light={StaticResource Tertiary}, Dark={StaticResource TertiaryDark}}"
+                               FontSize="14"
+                               HorizontalOptions="Center"
+                               IsVisible="{Binding HasError}" />
+                        <!-- $1 -->
+                        <Button Text="Sign In"
+                                Command="{Binding LoginCommand}"
+                                Style="{StaticResource BaseButtonStyle}"
+                                HeightRequest="50"
+                                FontSize="18">
+                            <Button.Triggers>
+                                <DataTrigger TargetType="Button"
+                                           Binding="{Binding IsLoading}"
+                                           Value="True">
+                                    <Setter Property="Text" Value="Signing In... /
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
+                        <!-- $1 -->
+                        <ActivityIndicator IsVisible="{Binding IsLoading}"
+                                         IsRunning="{Binding IsLoading}"
+                                         Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                         HorizontalOptions="Center" />
+                    </StackLayout>
+                    <!-- $1 -->
+                    <StackLayout Spacing="10">
+                        <Label Text="Demo Credentials"
+                               Style="{StaticResource SubtitleLabelStyle}"
+                               HorizontalOptions="Center" />
+                        <StackLayout Orientation="Horizontal"
+                                    HorizontalOptions="Center"
+                                    Spacing="20">
+                            <Button Text="Admin"
+                                    Command="{Binding UseAdminCredentialsCommand}"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    FontSize="14"
+                                    Padding="20,8" />
+                            <Button Text="User"
+                                    Command="{Binding UseUserCredentialsCommand}"
+                                    Style="{StaticResource SecondaryButtonStyle}"
+                                    FontSize="14"
+                                    Padding="20,8" />
+                        </StackLayout>
+                        <Label Text="Admin: admin/admin123, User: user/user123"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="12"
+                               HorizontalOptions="Center"
+                               Opacity="0.7" />
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <BoxView Grid.Row="2" />
+        </Grid>
+    </ScrollView>
+</ContentPage>
+

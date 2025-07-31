@@ -1,0 +1,314 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="MultiAgent.Desktop.Views.AIPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="AI Services"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}">
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="20">
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Label Grid.Column="0"
+                           Text="🤖"
+                           FontSize="32"
+                           VerticalOptions="Center" />
+                    <StackLayout Grid.Column="1"
+                               Spacing="5"
+                               Margin="15,0">
+                        <Label Text="AI Services"
+                               Style="{StaticResource TitleLabelStyle}" />
+                        <Label Text="Manage AI models and chat with intelligent agents"
+                               Style="{StaticResource BodyLabelStyle}" />
+                        <Label Text="
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="12" />
+                    </StackLayout>
+                    <Button Grid.Column="2"
+                            Text="⚙️"
+                            Command="{Binding ConfigureModelsCommand}"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            ToolTipProperties.Text="Configure AI models"
+                            VerticalOptions="Center" />
+                </Grid>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Label Text="Model Status"
+                           Style="{StaticResource SubtitleLabelStyle}" />
+                    <CollectionView ItemsSource="{Binding AvailableModels}"
+                                   HeightRequest="120">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Horizontal"
+                                             ItemSpacing="15" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame Style="{StaticResource CardFrameStyle}"
+                                       WidthRequest="200"
+                                       BackgroundColor="{Binding StatusColor}">
+                                    <StackLayout Spacing="8">
+                                        <Label Text="{Binding Name}"
+                                               Style="{StaticResource SubtitleLabelStyle}"
+                                               TextColor="White"
+                                               HorizontalOptions="Center" />
+                                        <Label Text="{Binding Provider}"
+                                               Style="{StaticResource BodyLabelStyle}"
+                                               TextColor="White"
+                                               FontSize="12"
+                                               HorizontalOptions="Center" />
+                                        <Label Text="{Binding Status}"
+                                               Style="{StaticResource StatusLabelStyle}"
+                                               TextColor="White"
+                                               HorizontalOptions="Center" />
+                                        <Label Text="{Binding ResponseTime, StringFormat='{0}ms'}"
+                                               Style="{StaticResource BodyLabelStyle}"
+                                               TextColor="White"
+                                               FontSize="10"
+                                               HorizontalOptions="Center" />
+                                    </StackLayout>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0"
+                               Text="AI Chat"
+                               Style="{StaticResource SubtitleLabelStyle}" />
+                        <Picker Grid.Column="1"
+                                ItemsSource="{Binding AvailableModels}"
+                                ItemDisplayBinding="{Binding DisplayName}"
+                                SelectedItem="{Binding SelectedModel}"
+                                Title="Select Model"
+                                WidthRequest="200" />
+                    </Grid>
+                    <!-- $1 -->
+                    <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}"
+                           CornerRadius="10"
+                           Padding="10"
+                           HeightRequest="300">
+                        <CollectionView ItemsSource="{Binding ChatMessages}"
+                                       VerticalScrollBarVisibility="Always">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="Auto,*"
+                                          RowDefinitions="Auto,Auto"
+                                          Margin="5"
+                                          ColumnSpacing="10">
+                                        <!-- $1 -->
+                                        <Frame Grid.Row="0" Grid.Column="0"
+                                               BackgroundColor="{Binding SenderColor}"
+                                               CornerRadius="20"
+                                               WidthRequest="40"
+                                               HeightRequest="40"
+                                               Padding="0"
+                                               HasShadow="False"
+                                               VerticalOptions="Start">
+                                            <Label Text="{Binding SenderIcon}"
+                                                   FontSize="20"
+                                                   TextColor="White"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center" />
+                                        </Frame>
+                                        <!-- $1 -->
+                                        <StackLayout Grid.Row="0" Grid.Column="1"
+                                                   Spacing="5">
+                                            <StackLayout Orientation="Horizontal"
+                                                       Spacing="10">
+                                                <Label Text="{Binding Sender}"
+                                                       Style="{StaticResource BodyLabelStyle}"
+                                                       FontAttributes="Bold"
+                                                       FontSize="12" />
+                                                <Label Text="{Binding Timestamp, StringFormat='{0:HH:mm:ss}'}"
+                                                       Style="{StaticResource BodyLabelStyle}"
+                                                       FontSize="10"
+                                                       Opacity="0.7" />
+                                            </StackLayout>
+                                            <Label Text="{Binding Content}"
+                                                   Style="{StaticResource BodyLabelStyle}"
+                                                   LineBreakMode="WordWrap" />
+                                        </StackLayout>
+                                        <!-- $1 -->
+                                        <Label Grid.Row="1" Grid.Column="1"
+                                               Text="{Binding TokenUsage, StringFormat='Tokens: {0}'}"
+                                               Style="{StaticResource BodyLabelStyle}"
+                                               FontSize="10"
+                                               Opacity="0.6"
+                                               IsVisible="{Binding HasTokenUsage}"
+                                               Margin="0,5,0,0" />
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </Frame>
+                    <!-- $1 -->
+                    <Grid ColumnDefinitions="*,Auto,Auto"
+                          ColumnSpacing="10">
+                        <Entry Grid.Column="0"
+                               Text="{Binding MessageText}"
+                               Placeholder="Type your message here..."
+                               ReturnCommand="{Binding SendMessageCommand}"
+                               IsEnabled="{Binding CanSendMessage}" />
+                        <Button Grid.Column="1"
+                                Text="📎"
+                                Command="{Binding AttachFileCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                ToolTipProperties.Text="Attach file"
+                                IsEnabled="{Binding CanSendMessage}" />
+                        <Button Grid.Column="2"
+                                Text="Send"
+                                Command="{Binding SendMessageCommand}"
+                                Style="{StaticResource BaseButtonStyle}"
+                                IsEnabled="{Binding CanSendMessage}" />
+                    </Grid>
+                    <!-- $1 -->
+                    <Grid ColumnDefinitions="Auto,Auto,*,Auto"
+                          ColumnSpacing="10">
+                        <Button Grid.Column="0"
+                                Text="Clear"
+                                Command="{Binding ClearChatCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12" />
+                        <Button Grid.Column="1"
+                                Text="Export"
+                                Command="{Binding ExportChatCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12" />
+                        <Label Grid.Column="2"
+                               Text="{Binding TotalTokensUsed, StringFormat='Total tokens used: {0}'}"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="10"
+                               VerticalOptions="Center"
+                               HorizontalOptions="End" />
+                        <ActivityIndicator Grid.Column="3"
+                                         IsVisible="{Binding IsProcessing}"
+                                         IsRunning="{Binding IsProcessing}"
+                                         Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                         WidthRequest="20"
+                                         HeightRequest="20" />
+                    </Grid>
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Label Text="AI Functions"
+                           Style="{StaticResource SubtitleLabelStyle}" />
+                    <Grid ColumnDefinitions="*,*"
+                          RowDefinitions="Auto,Auto,Auto"
+                          ColumnSpacing="15"
+                          RowSpacing="15">
+                        <!-- $1 -->
+                        <Button Grid.Row="0" Grid.Column="0"
+                                Text="📝 Text Generation"
+                                Command="{Binding OpenTextGenerationCommand}"
+                                Style="{StaticResource BaseButtonStyle}"
+                                HeightRequest="60" />
+                        <!-- $1 -->
+                        <Button Grid.Row="0" Grid.Column="1"
+                                Text="🔍 Code Analysis"
+                                Command="{Binding OpenCodeAnalysisCommand}"
+                                Style="{StaticResource BaseButtonStyle}"
+                                HeightRequest="60" />
+                        <!-- $1 -->
+                        <Button Grid.Row="1" Grid.Column="0"
+                                Text="📄 Document Analysis"
+                                Command="{Binding OpenDocumentAnalysisCommand}"
+                                Style="{StaticResource BaseButtonStyle}"
+                                HeightRequest="60" />
+                        <!-- $1 -->
+                        <Button Grid.Row="1" Grid.Column="1"
+                                Text="⚡ Function Calling"
+                                Command="{Binding OpenFunctionCallingCommand}"
+                                Style="{StaticResource BaseButtonStyle}"
+                                HeightRequest="60" />
+                        <!-- $1 -->
+                        <Button Grid.Row="2" Grid.Column="0"
+                                Text="🧠 Embeddings"
+                                Command="{Binding OpenEmbeddingsCommand}"
+                                Style="{StaticResource BaseButtonStyle}"
+                                HeightRequest="60" />
+                        <!-- $1 -->
+                        <Button Grid.Row="2" Grid.Column="1"
+                                Text="⚖️ Model Comparison"
+                                Command="{Binding OpenModelComparisonCommand}"
+                                Style="{StaticResource BaseButtonStyle}"
+                                HeightRequest="60" />
+                    </Grid>
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Label Text="Usage Statistics"
+                           Style="{StaticResource SubtitleLabelStyle}" />
+                    <Grid ColumnDefinitions="*,*,*"
+                          ColumnSpacing="15">
+                        <!-- $1 -->
+                        <StackLayout Grid.Column="0"
+                                   Spacing="5">
+                            <Label Text="Requests Today"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   HorizontalOptions="Center" />
+                            <Label Text=""
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="10"
+                                   HorizontalOptions="Center"
+                                   Opacity="0.7" />
+                            <Label Text="{Binding RequestsToday}"
+                                   Style="{StaticResource TitleLabelStyle}"
+                                   FontSize="24"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <StackLayout Grid.Column="1"
+                                   Spacing="5">
+                            <Label Text="Tokens Used"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   HorizontalOptions="Center" />
+                            <Label Text="
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="10"
+                                   HorizontalOptions="Center"
+                                   Opacity="0.7" />
+                            <Label Text="{Binding TokensUsedToday}"
+                                   Style="{StaticResource TitleLabelStyle}"
+                                   FontSize="24"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <StackLayout Grid.Column="2"
+                                   Spacing="5">
+                            <Label Text="Avg Response"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   HorizontalOptions="Center" />
+                            <Label Text=""
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="10"
+                                   HorizontalOptions="Center"
+                                   Opacity="0.7" />
+                            <Label Text="{Binding AverageResponseTime, StringFormat='{0}ms'}"
+                                   Style="{StaticResource TitleLabelStyle}"
+                                   FontSize="24"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                        </StackLayout>
+                    </Grid>
+                </StackLayout>
+            </Frame>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
+

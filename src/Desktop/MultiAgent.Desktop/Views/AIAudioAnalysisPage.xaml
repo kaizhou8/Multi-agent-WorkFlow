@@ -1,0 +1,505 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="MultiAgent.Desktop.Views.AIAudioAnalysisPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="AI Audio Analysis"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}">
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="20">
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Label Grid.Column="0"
+                           Text="🎵"
+                           FontSize="32"
+                           VerticalOptions="Center" />
+                    <StackLayout Grid.Column="1"
+                               Spacing="5"
+                               Margin="15,0">
+                        <Label Text="AI Audio Analysis"
+                               Style="{StaticResource TitleLabelStyle}" />
+                        <Label Text="Analyze audio files with AI for speech recognition, sentiment analysis, and content understanding"
+                               Style="{StaticResource BodyLabelStyle}" />
+                        <Label Text="
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="12" />
+                    </StackLayout>
+                    <Button Grid.Column="2"
+                            Text="History"
+                            Command="{Binding ShowHistoryCommand}"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            VerticalOptions="Center" />
+                </Grid>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                        <Label Grid.Column="0"
+                               Text="Audio Upload"
+                               Style="{StaticResource SubtitleLabelStyle}" />
+                        <Button Grid.Column="1"
+                                Text="🎤 Record"
+                                Command="{Binding RecordAudioCommand}"
+                                Style="{StaticResource BaseButtonStyle}"
+                                FontSize="12"
+                                Margin="5,0" />
+                        <Button Grid.Column="2"
+                                Text="📁 Browse"
+                                Command="{Binding BrowseAudioCommand}"
+                                Style="{StaticResource BaseButtonStyle}"
+                                FontSize="12"
+                                Margin="5,0" />
+                        <Button Grid.Column="3"
+                                Text="Clear"
+                                Command="{Binding ClearAudioCommand}"
+                                Style="{StaticResource DangerButtonStyle}"
+                                FontSize="12" />
+                    </Grid>
+                    <!-- $1 -->
+                    <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}"
+                           CornerRadius="10"
+                           Padding="30"
+                           HeightRequest="150"
+                           HasShadow="False"
+                           BorderColor="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}"
+                           IsVisible="{Binding HasNoAudio}">
+                        <StackLayout Spacing="10"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center">
+                            <Label Text="🎵"
+                                   FontSize="48"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}" />
+                            <Label Text="Drop audio file here, record, or click Browse"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}" />
+                            <Label Text="
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray400}, Dark={StaticResource Gray500}}" />
+                        </StackLayout>
+                    </Frame>
+                    <!-- $1 -->
+                    <Frame Style="{StaticResource CardFrameStyle}"
+                           BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}"
+                           IsVisible="{Binding HasAudio}">
+                        <StackLayout Spacing="15">
+                            <!-- $1 -->
+                            <Grid ColumnDefinitions="Auto,*"
+                                  ColumnSpacing="15">
+                                <Label Grid.Column="0"
+                                       Text="🎵"
+                                       FontSize="32"
+                                       VerticalOptions="Center" />
+                                <StackLayout Grid.Column="1"
+                                           Spacing="5">
+                                    <Label Text="{Binding AudioName}"
+                                           Style="{StaticResource BodyLabelStyle}"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           LineBreakMode="TailTruncation" />
+                                    <StackLayout Orientation="Horizontal"
+                                               Spacing="15">
+                                        <Label Text="{Binding AudioDuration, StringFormat='Duration: {0}'}"
+                                               Style="{StaticResource BodyLabelStyle}"
+                                               FontSize="12" />
+                                        <Label Text="{Binding AudioFormat, StringFormat='Format: {0}'}"
+                                               Style="{StaticResource BodyLabelStyle}"
+                                               FontSize="12" />
+                                        <Label Text="{Binding AudioSize, StringFormat='Size: {0}'}"
+                                               Style="{StaticResource BodyLabelStyle}"
+                                               FontSize="12" />
+                                    </StackLayout>
+                                    <Label Text="{Binding AudioPath}"
+                                           Style="{StaticResource BodyLabelStyle}"
+                                           FontSize="10"
+                                           LineBreakMode="TailTruncation"
+                                           TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                                </StackLayout>
+                            </Grid>
+                            <!-- $1 -->
+                            <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto">
+                                <Button Grid.Column="0"
+                                        Text="{Binding PlayButtonText}"
+                                        Command="{Binding PlayPauseCommand}"
+                                        Style="{StaticResource BaseButtonStyle}"
+                                        FontSize="16"
+                                        Padding="15,10"
+                                        WidthRequest="80" />
+                                <Slider Grid.Column="1"
+                                        Value="{Binding PlaybackPosition}"
+                                        Maximum="{Binding AudioDurationSeconds}"
+                                        Margin="15,0"
+                                        ThumbColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                        MinimumTrackColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                        MaximumTrackColor="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
+                                <Label Grid.Column="2"
+                                       Text="{Binding CurrentTime}"
+                                       Style="{StaticResource BodyLabelStyle}"
+                                       FontSize="12"
+                                       VerticalOptions="Center"
+                                       Margin="10,0" />
+                                <Label Grid.Column="3"
+                                       Text="/"
+                                       Style="{StaticResource BodyLabelStyle}"
+                                       FontSize="12"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Column="4"
+                                       Text="{Binding TotalTime}"
+                                       Style="{StaticResource BodyLabelStyle}"
+                                       FontSize="12"
+                                       VerticalOptions="Center"
+                                       Margin="5,0,0,0" />
+                            </Grid>
+                        </StackLayout>
+                    </Frame>
+                    <!-- $1 -->
+                    <StackLayout Orientation="Horizontal"
+                               Spacing="10"
+                               HorizontalOptions="Center">
+                        <Label Text="Supported formats:"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="12" />
+                        <Label Text="MP3, WAV, M4A, FLAC, OGG"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontSize="12"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}">
+                <StackLayout Spacing="15">
+                    <Label Text="Analysis Options"
+                           Style="{StaticResource SubtitleLabelStyle}" />
+                    <Grid ColumnDefinitions="*,*"
+                          ColumnSpacing="20"
+                          RowDefinitions="Auto,Auto,Auto,Auto"
+                          RowSpacing="15">
+                        <!-- $1 -->
+                        <CheckBox Grid.Row="0" Grid.Column="0"
+                                  IsChecked="{Binding RecognizeSpeech}"
+                                  VerticalOptions="Center" />
+                        <StackLayout Grid.Row="0" Grid.Column="0"
+                                   Margin="30,0,0,0">
+                            <Label Text="Speech Recognition"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   FontAttributes="Bold" />
+                            <Label Text="Convert speech to text"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="10"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <CheckBox Grid.Row="0" Grid.Column="1"
+                                  IsChecked="{Binding AnalyzeSentiment}"
+                                  VerticalOptions="Center" />
+                        <StackLayout Grid.Row="0" Grid.Column="1"
+                                   Margin="30,0,0,0">
+                            <Label Text="Sentiment Analysis"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   FontAttributes="Bold" />
+                            <Label Text="Analyze emotional tone"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="10"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <CheckBox Grid.Row="1" Grid.Column="0"
+                                  IsChecked="{Binding DetectLanguage}"
+                                  VerticalOptions="Center" />
+                        <StackLayout Grid.Row="1" Grid.Column="0"
+                                   Margin="30,0,0,0">
+                            <Label Text="Language Detection"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   FontAttributes="Bold" />
+                            <Label Text="Identify spoken language"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="10"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <CheckBox Grid.Row="1" Grid.Column="1"
+                                  IsChecked="{Binding IdentifySpeakers}"
+                                  VerticalOptions="Center" />
+                        <StackLayout Grid.Row="1" Grid.Column="1"
+                                   Margin="30,0,0,0">
+                            <Label Text="Speaker Identification"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   FontAttributes="Bold" />
+                            <Label Text="Identify different speakers"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="10"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <CheckBox Grid.Row="2" Grid.Column="0"
+                                  IsChecked="{Binding SummarizeContent}"
+                                  VerticalOptions="Center" />
+                        <StackLayout Grid.Row="2" Grid.Column="0"
+                                   Margin="30,0,0,0">
+                            <Label Text="Content Summarization"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   FontAttributes="Bold" />
+                            <Label Text="Generate content summary"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="10"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                        </StackLayout>
+                        <!-- $1 -->
+                        <CheckBox Grid.Row="2" Grid.Column="1"
+                                  IsChecked="{Binding ExtractKeywords}"
+                                  VerticalOptions="Center" />
+                        <StackLayout Grid.Row="2" Grid.Column="1"
+                                   Margin="30,0,0,0">
+                            <Label Text="Keyword Extraction"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   FontAttributes="Bold" />
+                            <Label Text="Extract important keywords"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="10"
+                                   TextColor="{AppThemeBinding Light={StaticResource Gray600}, Dark={StaticResource Gray400}}" />
+                        </StackLayout>
+                    </Grid>
+                    <!-- $1 -->
+                    <StackLayout Spacing="10">
+                        <Label Text="Recognition Language"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontAttributes="Bold" />
+                        <Picker ItemsSource="{Binding AvailableLanguages}"
+                                SelectedItem="{Binding SelectedLanguage}"
+                                Title="Select language /
+                                FontSize="12" />
+                    </StackLayout>
+                    <!-- $1 -->
+                    <Button Text="🔍 Analyze Audio"
+                            Command="{Binding AnalyzeAudioCommand}"
+                            Style="{StaticResource BaseButtonStyle}"
+                            FontSize="16"
+                            HeightRequest="50"
+                            IsEnabled="{Binding CanAnalyze}"
+                            HorizontalOptions="Center"
+                            WidthRequest="200" />
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}"
+                   IsVisible="{Binding IsAnalyzing}">
+                <StackLayout Spacing="15">
+                    <Label Text="Analyzing Audio..."
+                           Style="{StaticResource SubtitleLabelStyle}"
+                           HorizontalOptions="Center" />
+                    <ActivityIndicator IsRunning="{Binding IsAnalyzing}"
+                                     Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                     WidthRequest="40"
+                                     HeightRequest="40"
+                                     HorizontalOptions="Center" />
+                    <Label Text="{Binding AnalysisStatus}"
+                           Style="{StaticResource BodyLabelStyle}"
+                           HorizontalOptions="Center"
+                           FontSize="12" />
+                    <ProgressBar Progress="{Binding AnalysisProgress}"
+                                 ProgressColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                 BackgroundColor="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}"
+                                 HeightRequest="8" />
+                    <Button Text="Cancel Analysis"
+                            Command="{Binding CancelAnalysisCommand}"
+                            Style="{StaticResource DangerButtonStyle}"
+                            HorizontalOptions="Center" />
+                </StackLayout>
+            </Frame>
+            <!-- $1 -->
+            <Frame Style="{StaticResource CardFrameStyle}"
+                   IsVisible="{Binding HasResults}">
+                <StackLayout Spacing="15">
+                    <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                        <Label Grid.Column="0"
+                               Text="Analysis Results"
+                               Style="{StaticResource SubtitleLabelStyle}" />
+                        <Button Grid.Column="1"
+                                Text="📊"
+                                Command="{Binding ExportReportCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12"
+                                Padding="10,5"
+                                ToolTipProperties.Text="Export report" />
+                        <Button Grid.Column="2"
+                                Text="📋"
+                                Command="{Binding CopyResultsCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                FontSize="12"
+                                Padding="10,5"
+                                ToolTipProperties.Text="Copy results" />
+                        <Button Grid.Column="3"
+                                Text="💾"
+                                Command="{Binding SaveResultsCommand}"
+                                Style="{StaticResource BaseButtonStyle}"
+                                FontSize="12"
+                                Padding="10,5"
+                                ToolTipProperties.Text="Save results" />
+                    </Grid>
+                    <!-- $1 -->
+                    <StackLayout Spacing="10"
+                               IsVisible="{Binding HasTranscription}">
+                        <Label Text="📝 Transcription"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontAttributes="Bold" />
+                        <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}"
+                               CornerRadius="10"
+                               Padding="15">
+                            <Label Text="{Binding TranscriptionText}"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   LineBreakMode="WordWrap" />
+                        </Frame>
+                    </StackLayout>
+                    <!-- $1 -->
+                    <StackLayout Spacing="10"
+                               IsVisible="{Binding HasSummary}">
+                        <Label Text="📋 Content Summary"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontAttributes="Bold" />
+                        <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}"
+                               CornerRadius="10"
+                               Padding="15">
+                            <Label Text="{Binding ContentSummary}"
+                                   Style="{StaticResource BodyLabelStyle}"
+                                   FontSize="12"
+                                   LineBreakMode="WordWrap" />
+                        </Frame>
+                    </StackLayout>
+                    <!-- $1 -->
+                    <StackLayout Spacing="10"
+                               IsVisible="{Binding HasKeywords}">
+                        <Label Text="🏷️ Keywords"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontAttributes="Bold" />
+                        <CollectionView ItemsSource="{Binding Keywords}"
+                                       ItemsLayout="HorizontalList"
+                                       HeightRequest="40">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                           CornerRadius="15"
+                                           Padding="10,5"
+                                           Margin="5,0"
+                                           HasShadow="False">
+                                        <Label Text="{Binding}"
+                                               TextColor="White"
+                                               FontSize="10"
+                                               FontAttributes="Bold" />
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                    <!-- $1 -->
+                    <StackLayout Spacing="10"
+                               IsVisible="{Binding HasSentiment}">
+                        <Label Text="😊 Sentiment Analysis"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontAttributes="Bold" />
+                        <Grid ColumnDefinitions="*,*,*"
+                              ColumnSpacing="10">
+                            <Frame Grid.Column="0"
+                                   BackgroundColor="{Binding PositiveSentimentColor}"
+                                   CornerRadius="10"
+                                   Padding="10">
+                                <StackLayout Spacing="2">
+                                    <Label Text="Positive"
+                                           TextColor="White"
+                                           FontSize="10"
+                                           HorizontalOptions="Center" />
+                                    <Label Text="{Binding PositiveSentiment, StringFormat='{0:P0}'}"
+                                           TextColor="White"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           HorizontalOptions="Center" />
+                                </StackLayout>
+                            </Frame>
+                            <Frame Grid.Column="1"
+                                   BackgroundColor="{Binding NeutralSentimentColor}"
+                                   CornerRadius="10"
+                                   Padding="10">
+                                <StackLayout Spacing="2">
+                                    <Label Text="Neutral"
+                                           TextColor="White"
+                                           FontSize="10"
+                                           HorizontalOptions="Center" />
+                                    <Label Text="{Binding NeutralSentiment, StringFormat='{0:P0}'}"
+                                           TextColor="White"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           HorizontalOptions="Center" />
+                                </StackLayout>
+                            </Frame>
+                            <Frame Grid.Column="2"
+                                   BackgroundColor="{Binding NegativeSentimentColor}"
+                                   CornerRadius="10"
+                                   Padding="10">
+                                <StackLayout Spacing="2">
+                                    <Label Text="Negative"
+                                           TextColor="White"
+                                           FontSize="10"
+                                           HorizontalOptions="Center" />
+                                    <Label Text="{Binding NegativeSentiment, StringFormat='{0:P0}'}"
+                                           TextColor="White"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           HorizontalOptions="Center" />
+                                </StackLayout>
+                            </Frame>
+                        </Grid>
+                    </StackLayout>
+                    <!-- $1 -->
+                    <StackLayout Spacing="10"
+                               IsVisible="{Binding HasSpeakers}">
+                        <Label Text="👥 Speakers"
+                               Style="{StaticResource BodyLabelStyle}"
+                               FontAttributes="Bold" />
+                        <CollectionView ItemsSource="{Binding SpeakerInfo}"
+                                       HeightRequest="100">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame Style="{StaticResource CardFrameStyle}"
+                                           Margin="0,2"
+                                           Padding="10"
+                                           BackgroundColor="{AppThemeBinding Light={StaticResource Gray50}, Dark={StaticResource Gray800}}">
+                                        <Grid ColumnDefinitions="Auto,*,Auto">
+                                            <Label Grid.Column="0"
+                                                   Text="{Binding Id, StringFormat='Speaker {0}'}"
+                                                   Style="{StaticResource BodyLabelStyle}"
+                                                   FontSize="12"
+                                                   FontAttributes="Bold" />
+                                            <Label Grid.Column="1"
+                                                   Text="{Binding Duration, StringFormat='Duration: {0}'}"
+                                                   Style="{StaticResource BodyLabelStyle}"
+                                                   FontSize="10"
+                                                   HorizontalOptions="Center" />
+                                            <Label Grid.Column="2"
+                                                   Text="{Binding Confidence, StringFormat='{0:P0}'}"
+                                                   Style="{StaticResource BodyLabelStyle}"
+                                                   FontSize="10"
+                                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
+

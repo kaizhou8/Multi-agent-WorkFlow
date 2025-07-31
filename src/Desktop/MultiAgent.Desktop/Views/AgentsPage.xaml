@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="MultiAgent.Desktop.Views.AgentsPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="Agents"
+             BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}">
+    <Grid RowDefinitions="Auto,*">
+        <!-- $1 -->
+        <Frame Grid.Row="0"
+               Style="{StaticResource CardFrameStyle}"
+               Margin="20,20,20,10">
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                <!-- $1 -->
+                <StackLayout Grid.Column="0"
+                            Orientation="Horizontal"
+                            Spacing="15"
+                            VerticalOptions="Center">
+                    <Label Text="🤖"
+                           FontSize="24" />
+                    <StackLayout>
+                        <Label Text="Agents Management"
+                               Style="{StaticResource TitleLabelStyle}" />
+                        <Label Text="{Binding AgentCount, StringFormat='Total: {0} agents'}"
+                               Style="{StaticResource BodyLabelStyle}" />
+                    </StackLayout>
+                </StackLayout>
+                <!-- $1 -->
+                <SearchBar Grid.Column="1"
+                          Text="{Binding SearchText}"
+                          Placeholder="Search agents..."
+                          WidthRequest="250"
+                          VerticalOptions="Center"
+                          Margin="10,0" />
+                <!-- $1 -->
+                <Button Grid.Column="2"
+                        Text="{Binding ViewModeIcon}"
+                        Command="{Binding ToggleViewModeCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        FontSize="16"
+                        Padding="15,8"
+                        ToolTipProperties.Text="Toggle view mode"
+                        VerticalOptions="Center" />
+                <!-- $1 -->
+                <Button Grid.Column="3"
+                        Text="🔄"
+                        Command="{Binding RefreshCommand}"
+                        Style="{StaticResource BaseButtonStyle}"
+                        FontSize="16"
+                        Padding="15,8"
+                        ToolTipProperties.Text="Refresh agents"
+                        VerticalOptions="Center"
+                        IsEnabled="{Binding IsNotRefreshing}" />
+            </Grid>
+        </Frame>
+        <!-- $1 -->
+        <RefreshView Grid.Row="1"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshCommand}">
+            <!-- $1 -->
+            <CollectionView ItemsSource="{Binding FilteredAgents}"
+                           IsVisible="{Binding IsListView}"
+                           EmptyView="No agents found"
+                           Margin="20,0,20,20">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Style="{StaticResource CardFrameStyle}"
+                               Margin="0,5">
+                            <Grid ColumnDefinitions="Auto,*,Auto,Auto"
+                                  ColumnSpacing="15"
+                                  Padding="10">
+                                <!-- $1 -->
+                                <StackLayout Grid.Column="0"
+                                           Spacing="5"
+                                           VerticalOptions="Center">
+                                    <Frame BackgroundColor="{Binding StatusColor}"
+                                           CornerRadius="25"
+                                           WidthRequest="50"
+                                           HeightRequest="50"
+                                           Padding="0"
+                                           HasShadow="False">
+                                        <Label Text="🤖"
+                                               FontSize="24"
+                                               TextColor="White"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center" />
+                                    </Frame>
+                                    <Label Text="{Binding Status}"
+                                           Style="{StaticResource StatusLabelStyle}"
+                                           BackgroundColor="{Binding StatusColor}"
+                                           TextColor="White"
+                                           HorizontalOptions="Center" />
+                                </StackLayout>
+                                <!-- $1 -->
+                                <StackLayout Grid.Column="1"
+                                           VerticalOptions="Center"
+                                           Spacing="5">
+                                    <Label Text="{Binding Name}"
+                                           Style="{StaticResource SubtitleLabelStyle}" />
+                                    <Label Text="{Binding Description}"
+                                           Style="{StaticResource BodyLabelStyle}" />
+                                    <StackLayout Orientation="Horizontal"
+                                               Spacing="15">
+                                        <Label Text="{Binding Type, StringFormat='Type: {0}'}"
+                                               Style="{StaticResource BodyLabelStyle}"
+                                               FontSize="12" />
+                                        <Label Text="{Binding Version, StringFormat='v{0}'}"
+                                               Style="{StaticResource BodyLabelStyle}"
+                                               FontSize="12" />
+                                        <Label Text="{Binding LastHeartbeat, StringFormat='Last seen: {0:HH:mm}'}"
+                                               Style="{StaticResource BodyLabelStyle}"
+                                               FontSize="12" />
+                                    </StackLayout>
+                                </StackLayout>
+                                <!-- $1 -->
+                                <StackLayout Grid.Column="2"
+                                           VerticalOptions="Center"
+                                           Spacing="5">
+                                    <Label Text="Health"
+                                           Style="{StaticResource BodyLabelStyle}"
+                                           FontSize="12"
+                                           HorizontalOptions="Center" />
+                                    <Frame BackgroundColor="{Binding HealthColor}"
+                                           CornerRadius="15"
+                                           WidthRequest="30"
+                                           HeightRequest="30"
+                                           Padding="0"
+                                           HasShadow="False"
+                                           HorizontalOptions="Center">
+                                        <Label Text="{Binding HealthIcon}"
+                                               FontSize="16"
+                                               TextColor="White"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center" />
+                                    </Frame>
+                                    <Label Text="{Binding HealthPercentage, StringFormat='{0}%'}"
+                                           Style="{StaticResource BodyLabelStyle}"
+                                           FontSize="10"
+                                           HorizontalOptions="Center" />
+                                </StackLayout>
+                                <!-- $1 -->
+                                <StackLayout Grid.Column="3"
+                                           Orientation="Horizontal"
+                                           Spacing="10"
+                                           VerticalOptions="Center">
+                                    <Button Text="View"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ViewAgentCommand}"
+                                            CommandParameter="{Binding}"
+                                            Style="{StaticResource SecondaryButtonStyle}"
+                                            FontSize="12"
+                                            Padding="15,5" />
+                                    <Button Text="{Binding ActionButtonText}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ToggleAgentCommand}"
+                                            CommandParameter="{Binding}"
+                                            Style="{Binding ActionButtonStyle}"
+                                            FontSize="12"
+                                            Padding="15,5" />
+                                    <Button Text="⚙️"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ConfigureAgentCommand}"
+                                            CommandParameter="{Binding}"
+                                            Style="{StaticResource SecondaryButtonStyle}"
+                                            FontSize="12"
+                                            Padding="10,5"
+                                            ToolTipProperties.Text="Configure agent" />
+                                </StackLayout>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+        <!-- $1 -->
+        <ActivityIndicator Grid.Row="1"
+                          IsVisible="{Binding IsRefreshing}"
+                          IsRunning="{Binding IsRefreshing}"
+                          Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                          VerticalOptions="Center"
+                          HorizontalOptions="Center" />
+        <!-- $1 -->
+        <Button Grid.Row="1"
+                Text="➕"
+                Command="{Binding CreateAgentCommand}"
+                Style="{StaticResource BaseButtonStyle}"
+                FontSize="24"
+                WidthRequest="60"
+                HeightRequest="60"
+                CornerRadius="30"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="30"
+                ToolTipProperties.Text="Create new agent"
+                Shadow="{OnPlatform Default={x:Null},
+                                   WinUI={StaticResource ButtonShadow}}" />
+    </Grid>
+</ContentPage>
+
